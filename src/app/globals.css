@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
+@theme {
+  /* Brand: taken from the Royeel logo (burgundy + ivory), gold from the coat's jewels. */
+  --color-burgundy: #4d131c;
+  --color-burgundy-deep: #330b12;
+  --color-burgundy-soft: #6e2533;
+  --color-ivory: #f3ece3;
+  --color-ivory-light: #faf6f0;
+  --color-ivory-dark: #e6dccf;
+  --color-gold: #b8975a;
+  --color-gold-light: #d8bf8c;
+  --color-powder: #b9c5d4;
+  --color-ink: #2a1418;
+  --color-mute: #76635f;
+  --color-line: #d9cdbf;
+
+  --font-display: var(--display-font);
+  --font-sans: var(--body-font);
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --display-font: var(--font-cormorant), "Times New Roman", serif;
+  --body-font: var(--font-jost), system-ui, sans-serif;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root[lang="ar"] {
+  --display-font: var(--font-amiri), var(--font-cormorant), serif;
+  --body-font: var(--font-plex-arabic), var(--font-jost), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* Keeps the page from shifting sideways when a drawer hides the scrollbar. */
+  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory-light);
+  color: var(--color-ink);
+  font-family: var(--body-font);
+  font-weight: 400;
+  /* Cormorant's old-style figures make "01" read like "OI". */
+  font-variant-numeric: lining-nums;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-burgundy);
+  color: var(--color-ivory);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* Small caps label used above headings. */
+.eyebrow {
+  font-family: var(--body-font);
+  font-size: 0.6875rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+:root[lang="ar"] .eyebrow {
+  letter-spacing: 0.04em;
+  font-size: 0.875rem;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* The floating WhatsApp button moves up while the product page's buy bar shows. */
+:root[data-buybar] .wa-float {
+  bottom: 6.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide number input spinners in the admin. */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
