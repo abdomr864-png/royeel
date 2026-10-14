@@ -19,7 +19,7 @@ import { QuantityStepper } from './QuantityStepper'
 import { maxQuantity, useStore } from './StoreContext'
 import { primaryButton, secondaryButton } from './ui'
 
-const CITIES = [
+export const CITIES = [
   ['Casablanca', 'الدار البيضاء'],
   ['Rabat', 'الرباط'],
   ['Marrakech', 'مراكش'],

@@ -77,9 +77,9 @@ async function ProductContent({ params }: { params: Params }) {
 
 function ProductSkeleton() {
   return (
-    <div aria-hidden className="mx-auto grid max-w-[1440px] gap-7 pb-14 md:grid-cols-2 md:gap-10 md:px-[18px] md:pt-10 lg:gap-14">
-      <div className="aspect-[3/4] animate-pulse bg-ivory-dark" />
-      <div className="space-y-4 px-4 md:px-0">
+    <div aria-hidden className="mx-auto grid max-w-[1280px] gap-8 px-4 pb-14 pt-14 md:grid-cols-[1.1fr_1fr] md:gap-10 md:px-8 md:pt-20 lg:gap-14">
+      <div className="aspect-[3/4] animate-pulse rounded-[20px] bg-ivory-dark" />
+      <div className="space-y-4">
         <div className="h-10 w-2/3 bg-ivory-dark" />
         <div className="h-5 w-1/3 bg-ivory-dark" />
         <div className="h-24 w-full bg-ivory-dark/60" />

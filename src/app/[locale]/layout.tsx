@@ -10,7 +10,7 @@ import { Header } from '@/components/store/Header'
 import { MenuDrawer } from '@/components/store/MenuDrawer'
 import { MobileNav } from '@/components/store/MobileNav'
 import { Pixels } from '@/components/store/Pixels'
-import { Footer } from '@/components/store/Sections'
+import { Footer, Marquee } from '@/components/store/Sections'
 import { StoreProvider } from '@/components/store/StoreContext'
 
 export function generateStaticParams() {
@@ -54,6 +54,7 @@ export default async function StoreLayout({ children }: LayoutProps<'/[locale]'>
       <body>
         <StoreProvider locale={locale} products={products} settings={settings} demo={demo}>
           {demo ? <p className="bg-ink px-4 py-1.5 text-center text-[11px] leading-snug text-ivory">{t.demoBanner}</p> : null}
+          <Marquee t={t} />
           <ContactBar locale={locale} number={settings.whatsapp_number} />
           <Header />
           {children}

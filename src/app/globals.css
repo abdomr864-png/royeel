@@ -79,6 +79,29 @@ body {
   40%, 80% { transform: translateX(6px); }
 }
 
+/* Photo swapped in the home banner. */
+@keyframes fade {
+  from { opacity: 0; }
+}
+
+/* Sliding strip at the top of the shop: its content is laid out twice, so
+   moving by half its width loops without a seam. */
+.marquee {
+  animation: marquee 45s linear infinite;
+}
+:root[dir="rtl"] .marquee {
+  animation-name: marquee-rtl;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-rtl {
+  to { transform: translateX(50%); }
+}
+
 /* The floating WhatsApp button moves up while the product page's buy bar shows. */
 :root[data-buybar] .wa-float {
   bottom: 6.5rem;

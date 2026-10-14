@@ -8,10 +8,31 @@ import { pick } from '@/lib/localize'
 import { colorsOf, detailImages, isSoldOut, orderedImages, productPath } from '@/lib/product'
 import { mediaUrl } from '@/lib/supabase/env'
 import type { Product, ShowcasePiece } from '@/lib/types'
-import { HeroSlides } from './HeroSlides'
-import { secondaryButton } from './ui'
 
-// "NOUVEAUTÉS" followed by the swan, as section titles across the shop.
+// "— DESCRIPTION DÉTAILLÉE": a short line then small caps, above titles
+// (a line on both sides when centred).
+export function Eyebrow({ children, center }: { children: string; center?: boolean }) {
+  return (
+    <p className={`flex items-center gap-3 text-burgundy ${center ? 'justify-center' : ''}`}>
+      <span className="h-px w-7 bg-burgundy" />
+      <span className="eyebrow">{children}</span>
+      {center ? <span className="h-px w-7 bg-burgundy" /> : null}
+    </p>
+  )
+}
+
+// The last word of a title, in gold italics.
+export function Accent({ text }: { text: string }) {
+  const i = text.lastIndexOf(' ')
+  if (i < 0) return text
+  return (
+    <>
+      {text.slice(0, i)} <em className="text-gold rtl:not-italic">{text.slice(i + 1)}</em>
+    </>
+  )
+}
+
+// "LES DÉTAILS" followed by the swan, as a section title.
 export function SectionHeading({ children }: { children: string }) {
   return (
     <h2 className="flex items-center justify-center gap-3 text-center font-display text-[1.75rem] font-medium uppercase tracking-[0.06em] text-ink md:text-[2.125rem] rtl:tracking-normal">
@@ -21,69 +42,34 @@ export function SectionHeading({ children }: { children: string }) {
   )
 }
 
-// Brand photos for the home banner (public/brand/hero).
-const HERO_PHOTOS = [
-  '/brand/hero/becoming-her.jpg',
-  '/brand/hero/next-client.jpg',
-  '/brand/hero/royeel-sheets.jpg',
-  '/brand/hero/swan-newspaper.jpg',
-]
+const CARD_SIZES = '(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw'
 
-// Full-width banner: the brand photos side by side on computers, taking turns
-// on phones, with the call to action at the bottom so the words already in
-// the photos stay readable.
-export function HomeHero({ product, locale, t }: { product: Product; locale: Locale; t: Dictionary }) {
-  return (
-    // Pulled up under the header, which turns see-through over [data-hero]
-    // (its height plus its 1px border).
-    <section data-hero className="relative -mt-[65px] h-[86svh] min-h-[540px] overflow-hidden bg-burgundy-deep md:-mt-[89px] md:h-[min(100svh,880px)]">
-      <HeroSlides photos={HERO_PHOTOS} alts={t.home.heroPhotos} />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-transparent via-45% to-ink/75" />
-      <div className="relative flex h-full flex-col items-center justify-end px-6 pb-12 text-center text-ivory md:pb-16">
-        <h1 className="max-w-[18ch] font-display text-[2.25rem] font-medium leading-[1.05] md:max-w-none md:text-[3.5rem] rtl:leading-[1.35]">
-          {t.home.heroTitle}
-        </h1>
-        <Link
-          href={productPath(locale, product)}
-          prefetch
-          className="mt-8 inline-flex h-12 items-center rounded-[5px] bg-ivory px-9 text-[0.8125rem] font-medium uppercase tracking-[0.14em] text-burgundy transition-colors hover:bg-gold-light rtl:text-base rtl:tracking-normal"
-        >
-          {t.home.heroCta}
-        </Link>
-      </div>
-    </section>
-  )
-}
+const card = 'relative flex h-full flex-col overflow-hidden rounded-[18px] border border-line bg-white'
+const cardKind = 'text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-gold rtl:text-xs rtl:tracking-normal'
+const cardName = 'mt-1 font-display text-[1.25rem] font-semibold leading-tight text-ink md:text-[1.375rem]'
 
-// Image widths for a card shown alone (centred) or in the collection grid.
-const CARD_SIZES = { single: '(min-width: 768px) 380px, 92vw', grid: '(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 50vw' }
-
-export function ProductCard({
-  product,
-  locale,
-  t,
-  layout = 'single',
-}: {
-  product: Product
-  locale: Locale
-  t: Dictionary
-  layout?: keyof typeof CARD_SIZES
-}) {
+// White card of the catalogue: photo, collection, name, colours, then the
+// price facing a round arrow.
+export function ProductCard({ product, locale, t }: { product: Product; locale: Locale; t: Dictionary }) {
   const soldOut = isSoldOut(product)
   // A sold-out coat keeps one photo, under the veil.
   const [first, second] = soldOut ? orderedImages(product).slice(0, 1) : orderedImages(product)
   const name = pick(product, 'name', locale)
   const colors = colorsOf(product)
   return (
-    <Link href={productPath(locale, product)} prefetch className="group block">
+    <Link
+      href={productPath(locale, product)}
+      prefetch
+      className={`group ${card} transition-[translate,box-shadow] duration-300 ease-luxe hover:-translate-y-1 hover:shadow-[0_22px_44px_-22px_rgba(42,20,24,0.35)]`}
+    >
       <div className="relative aspect-[3/4] overflow-hidden bg-ivory-dark">
         {first ? (
           <Image
             src={mediaUrl(first.path)}
             alt={pick(first, 'alt', locale) || name}
             fill
-            sizes={CARD_SIZES[layout]}
-            className={`object-cover object-top transition-[opacity,scale] duration-700 ease-luxe group-hover:scale-[1.03] ${second ? 'group-hover:opacity-0' : ''}`}
+            sizes={CARD_SIZES}
+            className={`object-cover object-top transition-[opacity,scale] duration-700 ease-luxe group-hover:scale-[1.05] ${second ? 'group-hover:opacity-0' : ''}`}
           />
         ) : null}
         {second ? (
@@ -91,29 +77,40 @@ export function ProductCard({
             src={mediaUrl(second.path)}
             alt=""
             fill
-            sizes={CARD_SIZES[layout]}
+            sizes={CARD_SIZES}
             className="object-cover opacity-0 transition-opacity duration-700 ease-luxe group-hover:opacity-100"
           />
         ) : null}
         {soldOut ? (
           <SoldOutVeil t={t} />
         ) : (
-          <span className="absolute start-3 top-3 bg-gold px-2.5 py-1 text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-ivory rtl:text-xs rtl:tracking-normal">
+          <span className="absolute start-3 top-3 rounded-full bg-burgundy px-2.5 py-1 text-[0.5625rem] font-bold uppercase tracking-[0.08em] text-ivory rtl:text-xs rtl:tracking-normal">
             {t.product.new}
           </span>
         )}
       </div>
-      <p className="mt-3.5 text-[1.0625rem] text-ink">{name}</p>
-      <p className="text-sm text-mute">{t.product.categoryName}</p>
-      <p className={`mt-1 font-medium ${soldOut ? 'text-mute' : 'text-ink'}`}>{formatPrice(product.price_mad, locale)}</p>
-      {colors.length > 1 ? (
-        <span className="mt-2 flex flex-wrap gap-1.5" aria-label={colors.map((c) => pick(c, 'name', locale)).join(', ')}>
-          {colors.map((c) => (
-            <span key={c.id} className="size-3.5 rounded-full border border-ink/15" style={{ background: c.hex }} />
-          ))}
-        </span>
-      ) : null}
-      {soldOut ? null : <span className={`${secondaryButton} mt-3 h-10 w-full`}>{t.product.chooseOptions}</span>}
+      <div className="flex flex-1 flex-col p-3.5 md:p-[18px]">
+        <p className={cardKind}>{`${t.product.collection} · ${t.product.categoryName}`}</p>
+        <h3 className={cardName}>
+          <Accent text={name} />
+        </h3>
+        {colors.length > 1 ? (
+          <span className="mt-2.5 flex flex-wrap gap-1.5" aria-label={colors.map((c) => pick(c, 'name', locale)).join(', ')}>
+            {colors.map((c) => (
+              <span key={c.id} className="size-4 rounded-full border-2 border-white shadow-[0_0_0_1px_var(--color-line)]" style={{ background: c.hex }} />
+            ))}
+          </span>
+        ) : null}
+        <div className="mt-auto flex items-center justify-between gap-2 pt-3">
+          <p className={`text-[0.9375rem] font-semibold ${soldOut ? 'text-mute' : 'text-ink'}`}>{formatPrice(product.price_mad, locale)}</p>
+          <span
+            aria-hidden
+            className="grid size-[34px] shrink-0 place-items-center rounded-full bg-burgundy text-ivory transition-transform duration-300 ease-luxe group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1"
+          >
+            →
+          </span>
+        </div>
+      </div>
     </Link>
   )
 }
@@ -134,14 +131,18 @@ function SoldOutVeil({ t }: { t: Dictionary }) {
 export function ShowcaseCard({ piece, locale, t }: { piece: ShowcasePiece; locale: Locale; t: Dictionary }) {
   const name = pick(piece, 'name', locale)
   return (
-    <div>
+    <div className={card}>
       <div className="relative aspect-[3/4] overflow-hidden bg-ivory-dark">
-        <Image src={mediaUrl(piece.image_path)} alt={name} fill sizes={CARD_SIZES.grid} className="object-cover object-top" />
+        <Image src={mediaUrl(piece.image_path)} alt={name} fill sizes={CARD_SIZES} className="object-cover object-top" />
         <SoldOutVeil t={t} />
       </div>
-      <p className="mt-3.5 text-[1.0625rem] text-ink">{name}</p>
-      <p className="text-sm text-mute">{t.product.categoryName}</p>
-      <p className="mt-1 font-medium text-mute">{formatPrice(piece.price_mad, locale)}</p>
+      <div className="flex flex-1 flex-col p-3.5 md:p-[18px]">
+        <p className={cardKind}>{`${t.product.collection} · ${t.product.categoryName}`}</p>
+        <h3 className={cardName}>
+          <Accent text={name} />
+        </h3>
+        <p className="mt-auto pt-3 text-[0.9375rem] font-semibold text-mute">{formatPrice(piece.price_mad, locale)}</p>
+      </div>
     </div>
   )
 }
