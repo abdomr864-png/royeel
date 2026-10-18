@@ -1,12 +1,16 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { Ornament } from '@/components/brand/Logo'
-import { CheckoutSteps, ClearCart } from '@/components/store/Checkout'
-import { formatPrice, orderRef, whatsappLink } from '@/lib/format'
+import { ClearCart } from '@/components/store/Checkout'
+import { WhatsAppIcon } from '@/components/store/icons'
+import { getStorefront } from '@/lib/catalog'
+import { displayPhone, formatPrice, normalizeMoroccanPhone, orderRef, whatsappLink } from '@/lib/format'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
 import { getLocale } from '@/lib/i18n/get-dictionary'
 import type { Locale } from '@/lib/i18n/config'
-import { isSupabaseConfigured } from '@/lib/supabase/env'
+import { imagesFor } from '@/lib/product'
+import { isSupabaseConfigured, mediaUrl } from '@/lib/supabase/env'
 import { createPublicClient } from '@/lib/supabase/public'
 import type { OrderReceipt } from '@/lib/types'
 
@@ -14,19 +18,13 @@ export const metadata = { robots: { index: false } }
 
 export default async function ThanksPage({ params }: PageProps<'/[locale]/merci/[orderId]'>) {
   const locale = await getLocale()
-  const t = dictionaryFor(locale)
   return (
-    <main>
-      <CheckoutSteps step="done" />
-      <div className="h-10 md:h-14" />
-      <Suspense fallback={<p className="py-24 text-center text-mute">…</p>}>
+    // Blush light behind the card.
+    <main className="relative overflow-hidden bg-ivory-light px-4 pb-20 pt-10 md:pt-16">
+      <span aria-hidden className="pointer-events-none absolute left-1/2 top-0 size-[620px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-[#f1d9d6]/60 blur-3xl" />
+      <Suspense fallback={<p className="relative py-24 text-center text-mute">…</p>}>
         <Receipt locale={locale} orderId={params.then((p) => p.orderId)} />
       </Suspense>
-      <p className="pb-16 text-center">
-        <Link href={`/${locale}`} className="text-sm text-burgundy underline decoration-gold underline-offset-4">
-          {t.thanks.back}
-        </Link>
-      </p>
     </main>
   )
 }
@@ -35,10 +33,18 @@ async function Receipt({ locale, orderId }: { locale: Locale; orderId: Promise<s
   const t = dictionaryFor(locale)
   const id = await orderId
   const receipt = await loadReceipt(id)
-  if (!receipt) return <p className="py-24 text-center text-mute">{t.thanks.notFound}</p>
+  if (!receipt) {
+    return (
+      <div className="relative py-24 text-center">
+        <p className="text-mute">{t.thanks.notFound}</p>
+        <BackButton locale={locale} label={t.thanks.back} />
+      </div>
+    )
+  }
 
   const ref = orderRef(receipt.order_number)
-  const firstName = receipt.full_name.split(' ')[0]
+  const photo = await photoFor(receipt.items[0])
+  const phone = receipt.whatsapp_number ? normalizeMoroccanPhone(receipt.whatsapp_number) : null
   const wa = receipt.whatsapp_number ? whatsappLink(receipt.whatsapp_number, whatsappText(receipt, locale)) : null
   const cardState =
     receipt.payment_method === 'card' && receipt.payment_status !== 'paid'
@@ -48,87 +54,142 @@ async function Receipt({ locale, orderId }: { locale: Locale; orderId: Promise<s
       : null
 
   return (
-    <section className="mx-auto max-w-xl px-5 pb-12">
+    <section className="relative mx-auto max-w-[560px] text-center">
       <ClearCart />
-      <div className="bg-white px-6 py-10 text-center shadow-[0_20px_60px_rgba(77,19,28,0.08)] md:px-10">
-        <h1 className="font-display text-5xl font-light italic text-burgundy rtl:not-italic">{t.thanks.title}</h1>
-        <p className="mt-3 text-ink">{t.thanks.subtitle(firstName)}</p>
-        <p className="eyebrow mt-4 text-gold">
-          {t.thanks.number} {ref}
-        </p>
-        <Ornament className="mx-auto mt-6 w-32 text-gold" />
 
-        {cardState ? (
-          <div className="mt-8 border-s-2 border-burgundy bg-burgundy/5 px-4 py-3 text-start text-sm text-burgundy">
-            <p>{cardState === 'failed' ? t.thanks.cardFailed : t.thanks.cardPending}</p>
-            {cardState === 'failed' ? (
-              <a href={`/api/payments/cmi/start?order=${receipt.id}`} className="mt-2 inline-block underline">
-                {t.thanks.retryPayment}
-              </a>
-            ) : null}
+      {/* The coat in an arch, sealed with a burgundy check and a few gold sparkles. */}
+      <div className="relative mx-auto w-[min(62vw,250px)]">
+        <Sparkle className="absolute -start-8 top-10 size-5 animate-pulse text-gold" />
+        <Sparkle className="absolute -end-6 top-1/3 size-3.5 animate-pulse text-gold-light [animation-delay:0.6s]" />
+        <Sparkle className="absolute -start-4 bottom-16 size-3 animate-pulse text-gold-light [animation-delay:1.2s]" />
+        <div className="relative aspect-[4/5] overflow-hidden rounded-b-[28px] rounded-t-[min(31vw,125px)] border-[6px] border-white bg-ivory-dark shadow-[0_24px_50px_-20px_rgba(77,19,28,0.35)]">
+          {photo ? (
+            <Image src={mediaUrl(photo)} alt="" fill preload sizes="250px" className="object-cover object-top" />
+          ) : (
+            <Ornament className="absolute inset-x-8 top-1/2 -translate-y-1/2 text-gold" />
+          )}
+        </div>
+        <span className="absolute -bottom-3 -end-3 grid size-16 animate-[pop_0.5s_cubic-bezier(0.22,1,0.36,1)_0.2s_both] place-items-center rounded-full border-4 border-ivory-light bg-burgundy text-ivory shadow-[0_10px_24px_-6px_rgba(77,19,28,0.55)]">
+          <svg viewBox="0 0 24 24" className="size-7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </span>
+      </div>
+
+      <p className="eyebrow mt-10 text-burgundy">— {t.thanks.received}</p>
+      <h1 className="mt-4 font-display text-[2.5rem] font-medium leading-[1.1] text-ink md:text-[3.25rem] rtl:leading-[1.4]">
+        {t.thanks.heading[0]} <em className="text-gold rtl:not-italic">{t.thanks.heading[1]}</em>
+      </h1>
+      <Ornament className="mx-auto mt-4 w-28 text-gold" />
+      <p className="mx-auto mt-5 max-w-[440px] leading-relaxed text-mute">{t.thanks.team}</p>
+
+      {cardState ? (
+        <div className="mt-7 rounded-2xl border-s-2 border-burgundy bg-burgundy/5 px-5 py-4 text-start text-sm text-burgundy">
+          <p>{cardState === 'failed' ? t.thanks.cardFailed : t.thanks.cardPending}</p>
+          {cardState === 'failed' ? (
+            <a href={`/api/payments/cmi/start?order=${receipt.id}`} className="mt-2 inline-block underline">
+              {t.thanks.retryPayment}
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+
+      <div className="mt-8 rounded-[22px] border border-line bg-white/80 px-5 py-2 text-start text-[0.9375rem] shadow-[0_20px_50px_-30px_rgba(77,19,28,0.25)] backdrop-blur md:px-7">
+        <Line label={t.thanks.number} value={ref} />
+        {receipt.items.map((i) => (
+          <div key={`${i.product_name}-${i.color_name}-${i.size_label}`}>
+            <Line label={t.checkout.product} value={i.product_name} />
+            <Line label={t.thanks.colorSize} value={[i.color_name, i.size_label].filter(Boolean).join(' · ')} />
+            {i.quantity > 1 ? <Line label={t.product.quantity} value={`× ${i.quantity}`} /> : null}
           </div>
-        ) : null}
+        ))}
+        <Line label={t.checkout.shipping} value={receipt.shipping_mad ? formatPrice(receipt.shipping_mad, locale) : t.checkout.free} />
+        <div className="flex items-baseline justify-between gap-4 py-4">
+          <span className="text-ink">{t.checkout.total}</span>
+          <span className="font-display text-2xl font-semibold text-burgundy">{formatPrice(receipt.total_mad, locale)}</span>
+        </div>
+      </div>
 
-        <ul className="mt-8 divide-y divide-line border-y border-line text-start text-sm">
-          {receipt.items.map((i) => (
-            <li key={`${i.product_name}-${i.color_name}-${i.size_label}`} className="flex justify-between gap-4 py-3">
-              <span>
-                {i.product_name}
-                {i.color_name ? ` · ${i.color_name}` : ''} · {t.checkout.size} {i.size_label} × {i.quantity}
+      <div className="mt-8 text-start">
+        <p className="eyebrow text-center text-gold">{t.thanks.next}</p>
+        <ol className="mt-5 space-y-3">
+          {t.thanks.steps[receipt.payment_method].map((step, i) => (
+            <li key={step} className="flex items-center gap-4 rounded-2xl bg-ivory px-4 py-3.5 text-[0.9375rem] text-ink">
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white font-display text-lg text-burgundy shadow-[0_0_0_1px_var(--color-gold-light)]">
+                {i + 1}
               </span>
-              <span className="whitespace-nowrap">{formatPrice(i.unit_price_mad * i.quantity, locale)}</span>
+              {step}
             </li>
           ))}
-          <li className="flex justify-between py-3 text-mute">
-            <span>{t.checkout.shipping}</span>
-            <span>{receipt.shipping_mad ? formatPrice(receipt.shipping_mad, locale) : t.checkout.free}</span>
-          </li>
-          <li className="flex justify-between py-3 font-display text-xl">
-            <span>{t.checkout.total}</span>
-            <span>{formatPrice(receipt.total_mad, locale)}</span>
-          </li>
-        </ul>
-
-        <div className="mt-8 text-start">
-          <p className="eyebrow text-gold">{t.thanks.next}</p>
-          <ol className="mt-4 space-y-3">
-            {t.thanks.steps[receipt.payment_method].map((step, i) => (
-              <li key={step} className="flex gap-4 text-[0.95rem] text-ink">
-                <span className="grid size-7 shrink-0 place-items-center rounded-full border border-gold font-display text-gold">{i + 1}</span>
-                <span className="pt-0.5">{step}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        {receipt.bank ? (
-          <dl className="mt-8 grid gap-2 bg-ivory p-5 text-start text-sm">
-            <p className="font-display text-xl text-burgundy">{t.thanks.bank.title}</p>
-            <Row label={t.thanks.bank.name} value={receipt.bank.name} />
-            <Row label={t.thanks.bank.holder} value={receipt.bank.holder} />
-            <Row label={t.thanks.bank.rib} value={receipt.bank.rib} mono />
-            <Row label={t.thanks.bank.amount} value={formatPrice(receipt.total_mad, locale)} />
-          </dl>
-        ) : null}
-
-        {wa ? (
-          <a
-            href={wa}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`mt-8 flex h-14 items-center justify-center gap-3 text-[0.8125rem] font-medium uppercase tracking-[0.2em] rtl:text-base rtl:tracking-normal ${
-              receipt.payment_method === 'bank_transfer'
-                ? 'bg-[#1f7a4d] text-white'
-                : 'border border-line text-ink'
-            }`}
-          >
-            <WhatsAppIcon />
-            {receipt.payment_method === 'bank_transfer' ? t.thanks.whatsappCta : t.thanks.contact}
-          </a>
-        ) : null}
+        </ol>
       </div>
+
+      {receipt.bank ? (
+        <dl className="mt-8 grid gap-2 rounded-[22px] bg-ivory p-5 text-start text-sm md:p-6">
+          <p className="font-display text-xl text-burgundy">{t.thanks.bank.title}</p>
+          <Row label={t.thanks.bank.name} value={receipt.bank.name} />
+          <Row label={t.thanks.bank.holder} value={receipt.bank.holder} />
+          <Row label={t.thanks.bank.rib} value={receipt.bank.rib} mono />
+          <Row label={t.thanks.bank.amount} value={formatPrice(receipt.total_mad, locale)} />
+        </dl>
+      ) : null}
+
+      {wa && receipt.payment_method === 'bank_transfer' ? (
+        <a
+          href={wa}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 flex h-14 items-center justify-center gap-3 rounded-full bg-[#1f7a4d] text-[0.8125rem] font-semibold uppercase tracking-[0.14em] text-white rtl:text-base rtl:tracking-normal"
+        >
+          <WhatsAppIcon className="size-5" />
+          {t.thanks.whatsappCta}
+        </a>
+      ) : null}
+
+      {wa && phone ? (
+        <p className="mt-8 text-[0.9375rem] text-mute">
+          {t.thanks.question}{' '}
+          <a href={wa} target="_blank" rel="noopener noreferrer" dir="ltr" className="inline-flex items-center gap-1.5 font-semibold text-burgundy underline decoration-gold underline-offset-4">
+            <WhatsAppIcon className="size-4 text-[#25d366]" />
+            {displayPhone(phone)}
+          </a>
+        </p>
+      ) : null}
+
+      <BackButton locale={locale} label={t.thanks.back} />
     </section>
   )
+}
+
+function BackButton({ locale, label }: { locale: Locale; label: string }) {
+  return (
+    <Link
+      href={`/${locale}`}
+      className="mt-8 flex h-14 w-full items-center justify-center rounded-full bg-burgundy text-[0.8125rem] font-semibold uppercase tracking-[0.16em] text-ivory shadow-[0_10px_24px_-8px_rgba(77,19,28,0.55)] transition-colors hover:bg-burgundy-deep rtl:text-base rtl:tracking-normal"
+    >
+      {label}
+    </Link>
+  )
+}
+
+// Four-pointed star.
+function Sparkle({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0z" />
+    </svg>
+  )
+}
+
+// The photo of the first piece ordered, in its colour. Orders keep only the
+// names, so the piece is found again in the catalogue by its name.
+async function photoFor(item: OrderReceipt['items'][number] | undefined) {
+  if (!item) return null
+  const { products } = await getStorefront()
+  const product = products.find((p) => p.name_fr === item.product_name || p.name_ar === item.product_name)
+  if (!product) return null
+  const color = product.product_colors.find((c) => c.name_fr === item.color_name || c.name_ar === item.color_name)
+  return imagesFor(product, color?.id ?? null)[0]?.path ?? null
 }
 
 async function loadReceipt(id: string): Promise<OrderReceipt | null> {
@@ -147,6 +208,15 @@ function whatsappText(r: OrderReceipt, locale: Locale) {
   return `${t.thanks.whatsappMessage(orderRef(r.order_number))}\n${items}\n${t.checkout.total} : ${formatPrice(r.total_mad, locale)}\n${t.checkout.methods[r.payment_method].label}`
 }
 
+function Line({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-4 border-b border-line/70 py-3.5">
+      <span className="text-mute">{label}</span>
+      <span className="text-end font-semibold text-ink">{value || '—'}</span>
+    </div>
+  )
+}
+
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex justify-between gap-4">
@@ -155,13 +225,5 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
         {value || '—'}
       </dd>
     </div>
-  )
-}
-
-function WhatsAppIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
-      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3z" />
-    </svg>
   )
 }

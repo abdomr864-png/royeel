@@ -81,7 +81,7 @@ export function SettingsForm({ settings, integrations }: { settings: Settings; i
               name="notify_whatsapp_enabled"
               checked={!!s.notify_whatsapp_enabled}
               title="WhatsApp automatique"
-              text={integrations.whatsapp ? 'Message de confirmation envoyé automatiquement.' : 'Nécessite l’API WhatsApp Business (vérification Meta). En attendant, utilisez les boutons WhatsApp de chaque commande.'}
+              text={integrations.whatsapp ? 'Message avec les boutons « Oui » et « Non » : « Oui » confirme la commande, « Non » l’annule et remet le stock.' : 'Nécessite l’API WhatsApp Business (vérification Meta). En attendant, utilisez les boutons WhatsApp de chaque commande.'}
               status={integrations.whatsapp}
             />
             <Toggle

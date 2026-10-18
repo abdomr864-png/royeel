@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { OrderStatusSelect } from '@/components/admin/OrderControls'
-import { btn, Empty, input, PageHeader, StatusPill } from '@/components/admin/ui'
+import { btn, Empty, input, PageHeader, StatusPill, WhatsAppPill } from '@/components/admin/ui'
 import { requireAdmin } from '@/lib/admin/auth'
-import { PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL, STATUS_LABEL } from '@/lib/admin/labels'
+import { callCutoff, PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL, STATUS_LABEL, whatsappBadge, type WhatsAppConfirmation } from '@/lib/admin/labels'
 import { PAGE_SIZE, ordersQuery, parseOrderFilters } from '@/lib/admin/orders-query'
 import { displayPhone, formatDateTime, formatPrice, orderRef } from '@/lib/format'
 import { ORDER_STATUSES, type OrderStatus, type PaymentMethod, type PaymentStatus } from '@/lib/types'
@@ -23,6 +23,8 @@ type Row = {
   payment_method: PaymentMethod
   payment_status: PaymentStatus
   total_mad: number
+  whatsapp_confirmation: WhatsAppConfirmation
+  whatsapp_sent_at: string | null
   order_items: { size_label: string; color_name: string; quantity: number }[]
 }
 
@@ -31,12 +33,19 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/com
   const filters = parseOrderFilters(await searchParams)
   const offset = (filters.page - 1) * PAGE_SIZE
 
-  const [{ data, count, error }, ...statusCounts] = await Promise.all([
+  const [{ data, count, error }, { count: toCall }, ...statusCounts] = await Promise.all([
     ordersQuery(
       supabase,
       filters,
-      'id, order_number, created_at, full_name, phone, city, status, payment_method, payment_status, total_mad, order_items(size_label, color_name, quantity)',
+      'id, order_number, created_at, full_name, phone, city, status, payment_method, payment_status, total_mad, whatsapp_confirmation, whatsapp_sent_at, order_items(size_label, color_name, quantity)',
     ).range(offset, offset + PAGE_SIZE - 1),
+    // New orders whose WhatsApp message got no answer within a day.
+    supabase
+      .from('orders')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'new')
+      .eq('whatsapp_confirmation', 'sent')
+      .lt('whatsapp_sent_at', callCutoff()),
     ...ORDER_STATUSES.map((s) => supabase.from('orders').select('id', { count: 'exact', head: true }).eq('status', s)),
   ])
   if (error) throw new Error(error.message)
@@ -65,6 +74,12 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/com
           </a>
         }
       />
+
+      {toCall ? (
+        <p className="mb-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-900 ring-1 ring-inset ring-rose-200">
+          {toCall === 1 ? '1 commande attend' : `${toCall} commandes attendent`} un appel : pas de réponse au message WhatsApp depuis plus de 24 h. Elles sont marquées « À appeler » ci-dessous.
+        </p>
+      ) : null}
 
       <nav aria-label="Statut" className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:px-0">
         <Tab href={`/admin/commandes${qs({ statut: null })}`} active={!filters.status} label="Toutes" count={allCount} />
@@ -108,6 +123,9 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/com
                     <p className="text-sm text-mute">
                       {o.city} · {displayPhone(o.phone)}
                     </p>
+                    <span className="mt-1.5 block">
+                      <WhatsAppPill badge={whatsappBadge(o)} />
+                    </span>
                   </Link>
                   <StatusPill status={o.status} />
                 </div>
@@ -152,6 +170,9 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/com
                           {displayPhone(o.phone)} · {o.city}
                         </span>
                       </Link>
+                      <span className="mt-1 block">
+                        <WhatsAppPill badge={whatsappBadge(o)} />
+                      </span>
                     </td>
                     <td className="px-4 py-3">{sizes(o)}</td>
                     <td className="whitespace-nowrap px-4 py-3 text-end tabular-nums">{formatPrice(o.total_mad, 'fr')}</td>

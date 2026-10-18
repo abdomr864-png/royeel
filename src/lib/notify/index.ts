@@ -4,14 +4,11 @@ import { formatPrice, orderRef } from '@/lib/format'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
 import type { Locale } from '@/lib/i18n/config'
 import type { PaymentMethod } from '@/lib/types'
+import { sendConfirmationTemplate, whatsappConfigured } from '@/lib/whatsapp'
 import { orderEmailHtml } from './email-template'
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? ''
 const EMAIL_FROM = process.env.EMAIL_FROM ?? ''
-const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN ?? ''
-const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID ?? ''
-const WHATSAPP_TEMPLATE = process.env.WHATSAPP_TEMPLATE ?? 'order_confirmation'
-const WHATSAPP_API_VERSION = process.env.WHATSAPP_API_VERSION ?? 'v23.0'
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID ?? ''
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN ?? ''
 const TWILIO_FROM = process.env.TWILIO_FROM ?? ''
@@ -21,7 +18,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? ''
 // each on/off switch.
 export const channelsConfigured = {
   email: Boolean(RESEND_API_KEY && EMAIL_FROM),
-  whatsapp: Boolean(WHATSAPP_TOKEN && WHATSAPP_PHONE_NUMBER_ID),
+  whatsapp: whatsappConfigured,
   sms: Boolean(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_FROM),
 }
 
@@ -59,7 +56,7 @@ export async function notifyNewOrder(orderId: string) {
     }
   }
   if (settings.notify_whatsapp_enabled && channelsConfigured.whatsapp) {
-    jobs.push({ channel: 'WhatsApp', run: () => sendWhatsApp(order) })
+    jobs.push({ channel: 'WhatsApp', run: () => askConfirmation(order, supabase) })
   }
   if (settings.notify_sms_enabled && channelsConfigured.sms) {
     jobs.push({ channel: 'SMS', run: () => sendSms(order) })
@@ -114,34 +111,20 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
   if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`)
 }
 
-// Uses an approved WhatsApp template with three body variables:
-// {{1}} customer name, {{2}} order reference, {{3}} total.
-async function sendWhatsApp(order: OrderRow) {
-  const res = await fetch(`https://graph.facebook.com/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      messaging_product: 'whatsapp',
-      to: order.phone.replace(/\D/g, ''),
-      type: 'template',
-      template: {
-        name: WHATSAPP_TEMPLATE,
-        language: { code: order.locale },
-        components: [
-          {
-            type: 'body',
-            parameters: [
-              { type: 'text', text: order.full_name.split(' ')[0] },
-              { type: 'text', text: orderRef(order.order_number) },
-              { type: 'text', text: formatPrice(order.total_mad, order.locale) },
-            ],
-          },
-        ],
-      },
-    }),
-    signal: AbortSignal.timeout(10000),
+// Asks the customer to confirm with the template's "Oui" / "Non" buttons;
+// their answer comes back through /api/whatsapp/webhook.
+async function askConfirmation(order: OrderRow, supabase: ReturnType<typeof createServiceClient>) {
+  await sendConfirmationTemplate({
+    phone: order.phone,
+    locale: order.locale,
+    orderId: order.id,
+    variables: [order.full_name.split(' ')[0], orderRef(order.order_number), formatPrice(order.total_mad, order.locale)],
   })
-  if (!res.ok) throw new Error(`WhatsApp ${res.status}: ${await res.text()}`)
+  await supabase
+    .from('orders')
+    .update({ whatsapp_confirmation: 'sent', whatsapp_sent_at: new Date().toISOString() })
+    .eq('id', order.id)
+    .eq('whatsapp_confirmation', 'none')
 }
 
 async function sendSms(order: OrderRow) {

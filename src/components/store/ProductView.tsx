@@ -13,7 +13,7 @@ import { colorsOf, defaultColor, imagesFor, isSoldOut, sizesFor } from '@/lib/pr
 import { mediaUrl } from '@/lib/supabase/env'
 import { getAttribution, guessSource } from '@/lib/tracking/attribution'
 import { adCookies, track } from '@/lib/tracking/client'
-import { PAYMENT_METHODS, type PaymentMethod, type Product, type ProductImage } from '@/lib/types'
+import { ORDER_SOURCES, PAYMENT_METHODS, type OrderSource, type PaymentMethod, type Product, type ProductImage } from '@/lib/types'
 import { CITIES } from './Checkout'
 import { ChevronIcon, CloseIcon, CubeIcon, PerkIcon, UserIcon, WhatsAppIcon } from './icons'
 import { QuantityStepper } from './QuantityStepper'
@@ -62,6 +62,8 @@ export function ProductView({ product }: { product: Product }) {
   const [error, setError] = useState<{ code: OrderErrorCode; field?: Field } | null>(null)
   const methods = PAYMENT_METHODS.filter((m) => settings.payments[m])
   const [method, setMethod] = useState<PaymentMethod | null>(methods[0] ?? null)
+  // Left empty, it is guessed from the ad link that brought the visitor.
+  const [source, setSource] = useState<OrderSource | null>(null)
 
   const sizes = sizesFor(product, colorId)
   const selected = sizes.find((s) => s.id === sizeId && s.stock > 0)
@@ -156,7 +158,7 @@ export function ProductView({ product }: { product: Product }) {
         email: value('email'),
         city: value('city'),
         address: value('address'),
-        source: guessSource(attribution) ?? null,
+        source: source ?? guessSource(attribution) ?? null,
         paymentMethod: method!,
         items: [{ sizeId: selected.id, quantity }],
         locale,
@@ -410,6 +412,27 @@ export function ProductView({ product }: { product: Product }) {
                   />
                   {/* Honeypot for bots */}
                   <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
+
+                  <fieldset className="mt-1">
+                    <legend className="text-[0.8125rem] text-ink">
+                      {t.checkout.sourceQuestion} <span className="text-mute">({t.checkout.optional})</span>
+                    </legend>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      {ORDER_SOURCES.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          aria-pressed={source === s}
+                          onClick={() => setSource(source === s ? null : s)}
+                          className={`rounded-full border-[1.5px] px-4 py-2 text-[0.8125rem] font-medium transition-colors ${
+                            source === s ? 'border-burgundy bg-burgundy text-ivory' : 'border-line bg-white text-ink hover:border-burgundy'
+                          }`}
+                        >
+                          {t.checkout.sources[s]}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
 
                   {methods.length > 1 ? (
                     <div role="radiogroup" aria-label={t.checkout.payment} className="flex flex-wrap gap-2">

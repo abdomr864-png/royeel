@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { NoteForm, PaymentStatusSelect, StatusButtons, WhatsAppButtons, type WhatsAppTemplate } from '@/components/admin/OrderControls'
-import { Card, PageHeader, StatusPill } from '@/components/admin/ui'
+import { Card, PageHeader, StatusPill, WhatsAppPill } from '@/components/admin/ui'
 import { requireAdmin } from '@/lib/admin/auth'
-import { PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL, SOURCE_LABEL, STATUS_LABEL } from '@/lib/admin/labels'
+import { PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL, SOURCE_LABEL, STATUS_LABEL, whatsappBadge, type WhatsAppConfirmation } from '@/lib/admin/labels'
 import { displayPhone, formatDateTime, formatPrice, orderRef, whatsappLink } from '@/lib/format'
 import type { Locale } from '@/lib/i18n/config'
 import type { OrderSource, OrderStatus, PaymentMethod, PaymentStatus } from '@/lib/types'
@@ -34,6 +34,8 @@ type Order = {
   total_mad: number
   admin_note: string
   customer_id: string | null
+  whatsapp_confirmation: WhatsAppConfirmation
+  whatsapp_sent_at: string | null
   order_items: { id: string; product_name: string; size_label: string; color_name: string; quantity: number; unit_price_mad: number }[]
   order_events: { id: number; kind: string; message: string; data: Record<string, string>; created_at: string }[]
 }
@@ -89,7 +91,12 @@ export default async function OrderPage({ params }: PageProps<'/admin/commandes/
       <PageHeader
         title={`Commande ${ref}`}
         subtitle={<>Passée le {formatDateTime(o.created_at)} · site en {o.locale === 'ar' ? 'arabe' : 'français'}</>}
-        actions={<StatusPill status={o.status} />}
+        actions={
+          <span className="flex flex-wrap items-center gap-2">
+            <WhatsAppPill badge={whatsappBadge(o)} />
+            <StatusPill status={o.status} />
+          </span>
+        }
       />
 
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">

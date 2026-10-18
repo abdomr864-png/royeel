@@ -49,6 +49,11 @@ export function StatusPill({ status }: { status: OrderStatus }) {
   )
 }
 
+export function WhatsAppPill({ badge }: { badge: { label: string; style: string } | null }) {
+  if (!badge) return null
+  return <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${badge.style}`}>{badge.label}</span>
+}
+
 export function Label({ children, hint }: { children: ReactNode; hint?: ReactNode }) {
   return (
     <span className="block text-sm font-medium text-ink">

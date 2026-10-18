@@ -467,5 +467,42 @@ await test('the admin editor can give colours to a product that had none, keepin
   await as('authenticated', adminId, `delete from public.products where id = $1`, [productId])
 })
 
+console.log('\nwhatsapp confirmation')
+
+const answer = (id, phone, reply) =>
+  as('service_role', null, `select public.whatsapp_answer($1, $2, $3) as r`, [id, phone, reply]).then((res) => res.rows[0].r)
+
+await test('visitors cannot answer for a customer', async () => {
+  const order = await placeOrder({ phone: '+212633333301' })
+  await db.query(`update public.orders set whatsapp_confirmation = 'sent' where id = $1`, [order.id])
+  await expectError(as('anon', null, `select public.whatsapp_answer($1, '+212633333301', 'yes')`, [order.id]), 'permission denied')
+  await expectError(as('authenticated', strangerId, `select public.apply_order_status($1, 'cancelled', '', null)`, [order.id]), 'permission denied')
+})
+
+await test('"Oui" confirms the order once, only from its own phone', async () => {
+  const order = await placeOrder({ phone: '+212633333302' })
+  // Not asked yet.
+  assert.equal(await answer(order.id, '+212633333302', 'yes'), 'ignored')
+  await db.query(`update public.orders set whatsapp_confirmation = 'sent' where id = $1`, [order.id])
+  assert.equal(await answer(order.id, '+212600000000', 'yes'), 'ignored')
+  assert.equal(await answer(order.id, '+212633333302', 'yes'), 'confirmed')
+  assert.equal(await answer(order.id, '+212633333302', 'no'), 'ignored')
+  const o = (await db.query(`select status, whatsapp_confirmation from public.orders where id = $1`, [order.id])).rows[0]
+  assert.deepEqual(o, { status: 'confirmed', whatsapp_confirmation: 'confirmed' })
+  const last = (await db.query(`select message, created_by from public.order_events where order_id = $1 order by id desc limit 1`, [order.id])).rows[0]
+  assert.deepEqual(last, { message: 'Confirmée par la cliente sur WhatsApp', created_by: null })
+})
+
+await test('"Non" cancels the order and puts the stock back', async () => {
+  const before = await stockOf(sizeM.id)
+  const order = await placeOrder({ phone: '+212633333303' })
+  assert.equal(await stockOf(sizeM.id), before - 1)
+  await db.query(`update public.orders set whatsapp_confirmation = 'sent' where id = $1`, [order.id])
+  assert.equal(await answer(order.id, '+212633333303', 'no'), 'declined')
+  const o = (await db.query(`select status, whatsapp_confirmation from public.orders where id = $1`, [order.id])).rows[0]
+  assert.deepEqual(o, { status: 'cancelled', whatsapp_confirmation: 'declined' })
+  assert.equal(await stockOf(sizeM.id), before)
+})
+
 console.log(`\n${passed} checks passed`)
 await db.close()

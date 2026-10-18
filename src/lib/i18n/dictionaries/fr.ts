@@ -175,6 +175,11 @@ const fr = {
   thanks: {
     title: 'Merci',
     subtitle: (name: string) => `${name}, votre commande est bien enregistrée.`,
+    received: 'Commande reçue',
+    heading: ['Merci pour', 'votre commande'],
+    team: 'Notre équipe Royeel va vous contacter dans les plus brefs délais pour confirmer votre commande.',
+    colorSize: 'Couleur · Taille',
+    question: 'Pour toute question :',
     number: 'Commande',
     next: 'Et maintenant ?',
     steps: {
@@ -252,6 +257,13 @@ const fr = {
     button: 'Nous écrire sur WhatsApp',
   },
   notFound: { title: 'Page introuvable', back: 'Retour à la boutique' },
+  // Replies on WhatsApp to the customer's answer to the confirmation message.
+  whatsapp: {
+    confirmed: (name: string, ref: string) =>
+      `Merci ${name} ✨ Votre commande ${ref} est confirmée. Nous la préparons avec soin et vous prévenons dès son expédition.`,
+    declined: (ref: string) => `C’est noté : votre commande ${ref} est annulée.`,
+    contact: (phone: string) => `Pour toute question, écrivez-nous sur WhatsApp au ${phone}.`,
+  },
   demoBanner: 'Aperçu : la boutique n’est pas encore reliée à la base de données.',
 }
 

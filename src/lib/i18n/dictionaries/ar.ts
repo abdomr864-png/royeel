@@ -177,6 +177,11 @@ const ar: Dictionary = {
   thanks: {
     title: 'شكراً',
     subtitle: (name: string) => `${name}، تم تسجيل طلبك بنجاح.`,
+    received: 'تم استلام الطلب',
+    heading: ['شكراً على', 'طلبك'],
+    team: 'سيتصل بك فريق Royeel في أقرب وقت لتأكيد طلبك.',
+    colorSize: 'اللون · المقاس',
+    question: 'لأي سؤال:',
     number: 'الطلب',
     next: 'ماذا بعد؟',
     steps: {
@@ -254,6 +259,11 @@ const ar: Dictionary = {
     button: 'راسلينا على واتساب',
   },
   notFound: { title: 'الصفحة غير موجودة', back: 'العودة إلى المتجر' },
+  whatsapp: {
+    confirmed: (name: string, ref: string) => `شكراً ${name} ✨ تم تأكيد طلبك ${ref}. نحضّره بعناية وسنخبرك فور إرساله.`,
+    declined: (ref: string) => `تم تسجيل ذلك: لقد أُلغي طلبك ${ref}.`,
+    contact: (phone: string) => `لأي سؤال، راسلينا على واتساب: ${phone}.`,
+  },
   demoBanner: 'معاينة: المتجر غير مرتبط بقاعدة البيانات بعد.',
 }
 
