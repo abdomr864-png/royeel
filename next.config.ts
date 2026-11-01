@@ -7,6 +7,10 @@ const root = process.cwd();
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  experimental: {
+    // Reminds to upgrade when the installed version has a security advisory.
+    agentUpgrade: "security",
+  },
   outputFileTracingRoot: root,
   turbopack: {
     root,
