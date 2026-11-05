@@ -86,6 +86,8 @@ export type PublicSettings = {
   shipping_fee_mad: number
   meta_pixel_id: string
   tiktok_pixel_id: string
+  // Visitors see the "Bientôt disponible" page instead of the shop.
+  coming_soon: boolean
 }
 
 export type Storefront = {

@@ -138,6 +138,7 @@ await test('public settings list the payment methods, without WhatsApp ordering'
   assert.deepEqual(Object.keys(r.rows[0].s.payments).sort(), ['bank_transfer', 'card', 'cod'])
   assert.equal(r.rows[0].s.payments.cod, true)
   assert.equal(r.rows[0].s.payments.card, false)
+  assert.equal(r.rows[0].s.coming_soon, false)
 })
 
 await test('anon cannot call admin functions', async () => {
@@ -329,6 +330,10 @@ await test('the admin can edit the catalog and settings', async () => {
   assert.equal(p.rows[0].price_mad, 1490)
   const s = await as('authenticated', adminId, `update public.store_settings set card_enabled = true returning card_enabled`)
   assert.equal(s.rows[0].card_enabled, true)
+  await as('authenticated', adminId, `update public.store_settings set coming_soon = true`)
+  const soon = await as('anon', null, `select public.get_public_settings() as s`)
+  assert.equal(soon.rows[0].s.coming_soon, true)
+  await as('authenticated', adminId, `update public.store_settings set coming_soon = false`)
   const i = await as('authenticated', adminId, `insert into public.product_sizes (product_id, label, stock) select id, 'XXL', 2 from public.products returning id`)
   assert.equal(i.rows.length, 1)
   const piece = await as('authenticated', adminId, `insert into public.showcase_pieces (image_path) values ('showcase/a.jpg') returning id, is_published`)

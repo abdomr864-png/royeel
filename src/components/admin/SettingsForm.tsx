@@ -33,6 +33,24 @@ export function SettingsForm({ settings, integrations }: { settings: Settings; i
         </p>
       ) : null}
 
+      <Card title="Boutique en ligne">
+        <div className="grid gap-3">
+          <Toggle
+            name="coming_soon"
+            checked={!!s.coming_soon}
+            title="Mode « Bientôt disponible »"
+            text="Les visiteurs voient la page « Quelque chose de beau se prépare » avec vos liens Instagram et WhatsApp, au lieu de la collection. Décochez pour ouvrir la boutique."
+          />
+          <p className="text-sm text-mute">
+            Boutique fermée, vous pouvez quand même la voir :{' '}
+            <a href="/admin/apercu" target="_blank" rel="noopener" className="font-medium text-burgundy underline underline-offset-2">
+              ouvrir l’aperçu de la vraie boutique
+            </a>{' '}
+            (visible seulement par vous).
+          </p>
+        </div>
+      </Card>
+
       <div className="grid gap-4 xl:grid-cols-2">
         <Card title="Modes de paiement">
           <div className="grid gap-3">

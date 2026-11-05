@@ -445,6 +445,7 @@ const settingsSchema = z.object({
   admin_notify_email: z.union([z.literal(''), z.email()]),
   meta_pixel_id: z.string().trim().regex(/^(\d{5,20})?$/),
   tiktok_pixel_id: z.string().trim().regex(/^([A-Za-z0-9]{5,40})?$/),
+  coming_soon: z.boolean(),
 })
 
 const SETTINGS_ERRORS: Record<string, string> = {
@@ -466,6 +467,7 @@ const BOOLEAN_FIELDS = [
   'notify_email_enabled',
   'notify_whatsapp_enabled',
   'notify_sms_enabled',
+  'coming_soon',
 ] as const
 
 export async function saveSettings(formData: FormData): Promise<ActionResult> {

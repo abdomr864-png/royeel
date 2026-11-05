@@ -119,6 +119,7 @@ const DEMO_SETTINGS: PublicSettings = {
   shipping_fee_mad: 0,
   meta_pixel_id: '',
   tiktok_pixel_id: '',
+  coming_soon: false,
 }
 
 const DEMO_STOREFRONT: Storefront = { products: [DEMO_PRODUCT], showcase: DEMO_SHOWCASE, settings: DEMO_SETTINGS, demo: true }

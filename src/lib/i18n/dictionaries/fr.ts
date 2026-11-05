@@ -1,8 +1,8 @@
 const fr = {
   meta: {
-    title: 'Royeel · Le Manteau Perle',
+    title: 'Royeel · Le Manteau Cygne',
     description:
-      'Royeel, maison marocaine de mode féminine. Collection N°1 : un manteau en tweed bleu poudré, col bijou et boutons perlés. Livraison offerte partout au Maroc.',
+      'Royeel, maison marocaine de mode féminine. Collection N°1 : un manteau court crème, entièrement doublé, aux manches évasées et à la ceinture nouée. Livraison offerte partout au Maroc.',
   },
   nav: {
     menu: 'Menu',
@@ -265,6 +265,20 @@ const fr = {
     contact: (phone: string) => `Pour toute question, écrivez-nous sur WhatsApp au ${phone}.`,
   },
   demoBanner: 'Aperçu : la boutique n’est pas encore reliée à la base de données.',
+  // Shown instead of the shop while "Bientôt disponible" is on in the admin.
+  soon: {
+    metaTitle: 'Royeel · Bientôt',
+    metaDescription: 'Royeel, maison marocaine de mode féminine. Notre prochaine collection se prépare : suivez-nous sur Instagram pour la découvrir en premier.',
+    eyebrow: 'Nouvelle collection',
+    title: ['Quelque chose de beau', 'se prépare'],
+    sub: 'Notre prochaine collection est en cours de confection, pièce par pièce, au Maroc. Suivez-nous sur Instagram pour la découvrir en premier.',
+    instagram: 'Suivre sur Instagram',
+    whatsapp: 'Nous écrire sur WhatsApp',
+    whatsappMessage: 'Bonjour Royeel, j’aimerais être prévenue de la sortie de la collection.',
+    photo: 'Cygne blanc sur une page de journal ancien déchirée',
+    made: 'Confectionné au Maroc',
+    otherLanguage: { href: '/ar', label: 'العربية' },
+  },
 }
 
 export default fr
