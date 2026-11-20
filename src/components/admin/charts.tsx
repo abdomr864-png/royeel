@@ -30,7 +30,7 @@ export function ColumnChart({ points, unit, ariaLabel }: { points: ColumnPoint[]
       <div className="relative h-56 ps-14">
         {ticks.map((t) => (
           <div key={t} className="absolute inset-x-0 ps-14" style={{ bottom: `${(t / max) * 100}%` }}>
-            <div className="h-px bg-[#ebe4da]" />
+            <div className="h-px bg-[#efd9cc]" />
             <span className="absolute start-0 -translate-y-1/2 text-[11px] tabular-nums text-mute">{fmt(t)}</span>
           </div>
         ))}

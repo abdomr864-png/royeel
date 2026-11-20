@@ -274,7 +274,6 @@ const ar: Dictionary = {
     instagram: 'تابعينا على إنستغرام',
     whatsapp: 'راسلينا على واتساب',
     whatsappMessage: 'مرحباً Royeel، أودّ أن أعرف عند صدور المجموعة.',
-    photo: 'بجعة بيضاء على صفحة جريدة قديمة ممزقة',
     made: 'صُنع في المغرب',
     otherLanguage: { href: '/fr', label: 'Français' },
   },

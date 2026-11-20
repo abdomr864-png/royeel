@@ -17,7 +17,7 @@ export function ContactBar({ locale, number }: { locale: Locale; number: string 
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => track('Contact')}
-      className="flex h-9 items-center justify-center gap-2 bg-burgundy-deep px-4 text-[0.75rem] text-ivory/85 transition-colors hover:bg-[#45101a] hover:text-ivory md:text-[0.8125rem]"
+      className="flex h-9 items-center justify-center gap-2 bg-burgundy-deep px-4 text-[0.75rem] text-ivory/85 transition-colors hover:bg-[#4a0914] hover:text-ivory md:text-[0.8125rem]"
     >
       <WhatsAppIcon className="size-4 shrink-0 text-[#4fce8a]" />
       <span className="truncate md:hidden">{t.short}</span>

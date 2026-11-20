@@ -1,7 +1,7 @@
 import { getStorefront } from '@/lib/catalog'
 import { getDictionary, getLocale } from '@/lib/i18n/get-dictionary'
 import { productPath } from '@/lib/product'
-import { FullLogo } from '@/components/brand/Logo'
+import { Logo } from '@/components/brand/Logo'
 import { HomeHero } from '@/components/store/HomeHero'
 import { Faq, Instagram, Perks, Story } from '@/components/store/Sections'
 import { DetailsGrid, Eyebrow, ProductCard, ShowcaseCard } from '@/components/store/Showcase'
@@ -15,7 +15,7 @@ export default async function HomePage() {
   if (!product) {
     return (
       <main className="grid min-h-[70svh] place-items-center bg-burgundy px-6 text-ivory">
-        <FullLogo className="w-[min(70vw,360px)]" />
+        <Logo className="w-[min(60vw,300px)]" sizes="300px" preload />
       </main>
     )
   }

@@ -256,7 +256,7 @@ export function Lens({
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute z-10 overflow-hidden rounded-full border border-ivory/80 bg-ivory shadow-[0_12px_40px_rgba(42,20,24,0.35)]"
+      className="pointer-events-none absolute z-10 overflow-hidden rounded-full border border-ivory/80 bg-ivory shadow-[0_12px_40px_rgba(58,10,18,0.35)]"
       style={{ width: size, height: size, left: lens.x - size / 2, top: lens.y - size / 2 }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- enlarged copy of an already loaded photo */}

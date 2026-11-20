@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Swan, Wordmark } from '@/components/brand/Logo'
+import { Wordmark } from '@/components/brand/Logo'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
 import { BagIcon, MenuIcon, UserIcon } from './icons'
 import { LanguageLink } from './LanguageLink'
@@ -47,8 +47,7 @@ export function Header() {
         </button>
 
         <Link href={`/${locale}`} aria-label="Royeel" className="flex flex-col items-center">
-          <Swan className="h-7 w-auto md:h-10" />
-          <Wordmark className="mt-1 h-[11px] w-auto md:mt-1.5 md:h-[15px]" />
+          <Wordmark label={null} className="h-10 md:h-[56px]" />
         </Link>
 
         <div className="flex items-center justify-self-end md:h-full">

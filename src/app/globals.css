@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand: taken from the Royeel logo (burgundy + ivory), gold from the coat's jewels. */
-  --color-burgundy: #4d131c;
-  --color-burgundy-deep: #330b12;
-  --color-burgundy-soft: #6e2533;
-  --color-ivory: #f3ece3;
-  --color-ivory-light: #faf6f0;
-  --color-ivory-dark: #e6dccf;
-  --color-gold: #b8975a;
-  --color-gold-light: #d8bf8c;
+  /* Brand: the 2026 Royeel palette. "gold" is the old-rose of the logo's frame. */
+  --color-burgundy: #5b0b18;
+  --color-burgundy-deep: #3a0a12;
+  --color-burgundy-soft: #8b1e2d;
+  --color-ivory: #f6e8de;
+  --color-ivory-light: #fbf3ee;
+  --color-ivory-dark: #efd9cc;
+  --color-gold: #c38b78;
+  --color-gold-light: #edc9ba;
   --color-powder: #b9c5d4;
-  --color-ink: #2a1418;
-  --color-mute: #76635f;
-  --color-line: #d9cdbf;
+  --color-ink: #3a0a12;
+  --color-mute: #7d5a55;
+  --color-line: #e8d2c6;
 
   --font-display: var(--display-font);
   --font-sans: var(--body-font);

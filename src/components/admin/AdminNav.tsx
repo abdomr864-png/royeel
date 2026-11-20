@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { Swan, Wordmark } from '@/components/brand/Logo'
+import { Wordmark } from '@/components/brand/Logo'
 import { signOut } from '@/lib/admin/actions'
 
 const LINKS = [
@@ -58,8 +58,7 @@ export function AdminNav({ email }: { email: string }) {
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-svh flex-col bg-burgundy px-4 py-6 md:flex">
         <Link href="/admin" className="mb-8 flex items-center gap-3 px-2 text-ivory">
-          <Swan className="w-9" />
-          <Wordmark className="w-24" />
+          <Wordmark className="h-11" />
         </Link>
         {nav}
         {footer}
@@ -68,8 +67,7 @@ export function AdminNav({ email }: { email: string }) {
       {/* Phone top bar + drawer */}
       <header className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between bg-burgundy px-4 text-ivory md:hidden">
         <Link href="/admin" className="flex items-center gap-2">
-          <Swan className="w-7" />
-          <Wordmark className="w-20" />
+          <Wordmark className="h-9" />
         </Link>
         <button type="button" onClick={() => setOpen(true)} aria-label="Menu" className="grid size-10 place-items-center">
           <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.5">

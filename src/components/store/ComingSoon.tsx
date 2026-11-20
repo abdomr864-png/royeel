@@ -1,8 +1,7 @@
-import Image from 'next/image'
 import type { Dictionary } from '@/lib/i18n/get-dictionary'
 import type { PublicSettings } from '@/lib/types'
 import { whatsappLink } from '@/lib/format'
-import { FullLogo } from '@/components/brand/Logo'
+import { Logo } from '@/components/brand/Logo'
 import { InstagramIcon, WhatsAppIcon } from './icons'
 
 // Replaces the whole shop while "Bientôt disponible" is on in the admin:
@@ -12,9 +11,6 @@ export function ComingSoon({ t, settings }: { t: Dictionary; settings: PublicSet
   const external = { target: '_blank', rel: 'noopener noreferrer' }
   return (
     <main className="relative isolate flex min-h-svh flex-col overflow-hidden bg-burgundy text-ivory">
-      {/* Soft gold glow behind the photo. */}
-      <div aria-hidden className="absolute -top-40 start-1/2 -z-10 size-[44rem] -translate-x-1/2 rounded-full bg-burgundy-soft/45 blur-3xl rtl:translate-x-1/2 lg:start-1/4" />
-
       <header className="flex items-center justify-between px-5 pt-5 md:px-10 md:pt-8">
         <span className="text-[0.6875rem] uppercase tracking-[0.3em] text-gold-light/80 rtl:text-xs rtl:tracking-normal">{s.made}</span>
         <a href={s.otherLanguage.href} className="rounded-full border border-ivory/25 px-4 py-1.5 text-[0.8125rem] text-ivory/85 transition-colors hover:border-gold hover:text-ivory">
@@ -23,21 +19,15 @@ export function ComingSoon({ t, settings }: { t: Dictionary; settings: PublicSet
       </header>
 
       <div className="mx-auto grid w-full max-w-[1180px] flex-1 items-center gap-7 px-5 py-6 md:gap-10 md:px-10 md:py-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16 lg:py-16">
-        <div className="relative mx-auto w-[min(44vw,190px)] animate-[fade_1.4s_var(--ease-luxe)_both] lg:w-[min(32vw,400px)]">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-t-full border border-gold/50 p-2">
-            <div className="relative size-full overflow-hidden rounded-t-full">
-              <Image src="/brand/hero/swan-newspaper.jpg" alt={s.photo} fill preload sizes="(min-width: 1024px) 400px, 190px" className="object-cover" />
-            </div>
-          </div>
+        <div className="relative mx-auto w-[min(46vw,200px)] animate-[fade_1.4s_var(--ease-luxe)_both] lg:w-[min(30vw,360px)]">
+          <Logo preload sizes="(min-width: 1024px) 360px, 200px" className="w-full" />
           <Sparkle className="absolute -top-2 -end-5 size-6 text-gold-light lg:size-8" />
           <Sparkle className="absolute bottom-12 -start-6 size-4 text-gold lg:size-5" />
           <Sparkle className="absolute -bottom-3 end-8 size-3 text-ivory/70" />
         </div>
 
         <div className="text-center lg:text-start">
-          <FullLogo className="mx-auto w-[min(34vw,140px)] text-ivory lg:mx-0 lg:w-[200px]" />
-
-          <p className="mt-6 flex items-center justify-center gap-3 lg:mt-9 text-[0.6875rem] font-medium uppercase tracking-[0.32em] text-gold-light lg:justify-start rtl:text-sm rtl:tracking-normal">
+          <p className="flex items-center justify-center gap-3 text-[0.6875rem] font-medium uppercase tracking-[0.32em] text-gold-light lg:justify-start rtl:text-sm rtl:tracking-normal">
             <span aria-hidden className="h-px w-8 bg-gold/60" />
             {s.eyebrow}
             <span aria-hidden className="h-px w-8 bg-gold/60 lg:hidden" />

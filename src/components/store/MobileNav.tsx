@@ -14,7 +14,7 @@ export function MobileNav() {
   const item = 'flex flex-1 flex-col items-center justify-center gap-1 text-[11px] text-ink'
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] rounded-t-2xl border-x border-t border-line bg-ivory-light px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_20px_rgba(42,20,24,0.06)] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom))] rounded-t-2xl border-x border-t border-line bg-ivory-light px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_20px_rgba(58,10,18,0.06)] md:hidden">
       <button type="button" onClick={() => openPanel('menu')} className={item}>
         <MenuIcon className="size-6" />
         {t.nav.menu}

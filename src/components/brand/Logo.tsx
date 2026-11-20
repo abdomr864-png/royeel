@@ -1,48 +1,56 @@
-import type { SVGProps } from 'react'
-import { ornament, swan, tagline, wordmark } from './logo-paths'
+import Image from 'next/image'
+import type { CSSProperties } from 'react'
 
-type MarkProps = SVGProps<SVGSVGElement> & { title?: string }
+// The 2026 logo, cut from brand/source/royeel-logo-2026.png by
+// brand/make-logo-assets.mjs.
 
-function Mark({ shape, title, ...props }: MarkProps & { shape: { viewBox: string; d: string } }) {
+// Swan in its frame above "Royeel", in its own colours. Its background was
+// removed against the logo's bordeaux, so it belongs on bg-burgundy only.
+export function Logo({ className, preload, sizes = '240px' }: { className?: string; preload?: boolean; sizes?: string }) {
   return (
-    <svg
-      viewBox={shape.viewBox}
-      fill="currentColor"
-      fillRule="evenodd"
-      role={title ? 'img' : undefined}
-      aria-hidden={title ? undefined : true}
-      {...props}
-    >
-      {title ? <title>{title}</title> : null}
-      <path d={shape.d} />
-    </svg>
+    <Image
+      src="/brand/logo-full.png"
+      alt="Royeel"
+      width={695}
+      height={1187}
+      preload={preload}
+      sizes={sizes}
+      className={`h-auto ${className ?? ''}`}
+    />
   )
 }
 
-export function Swan(props: MarkProps) {
-  return <Mark shape={swan} {...props} />
-}
-
-export function Wordmark(props: MarkProps) {
-  return <Mark shape={wordmark} {...props} />
-}
-
-export function Ornament(props: MarkProps) {
-  return <Mark shape={ornament} {...props} />
-}
-
-export function Tagline(props: MarkProps) {
-  return <Mark shape={tagline} {...props} />
-}
-
-// Swan, wordmark, ornament and tagline stacked like the original logo.
-export function FullLogo({ className }: { className?: string }) {
+// One-colour parts of the logo, painted in currentColor: they work on any
+// background and follow the text colour.
+function Mark({ src, ratio, label, className }: { src: string; ratio: string; label?: string; className?: string }) {
+  const style: CSSProperties = {
+    aspectRatio: ratio,
+    maskImage: `url(${src})`,
+    WebkitMaskImage: `url(${src})`,
+    maskSize: 'contain',
+    WebkitMaskSize: 'contain',
+    maskRepeat: 'no-repeat',
+    WebkitMaskRepeat: 'no-repeat',
+    maskPosition: 'center',
+    WebkitMaskPosition: 'center',
+  }
   return (
-    <div className={`flex flex-col items-center ${className ?? ''}`} role="img" aria-label="Royeel — Uniquely yours.">
-      <Swan className="w-[39%]" />
-      <Wordmark className="mt-[6%] w-full" />
-      <Ornament className="mt-[3%] w-[55%]" />
-      <Tagline className="mt-[3%] w-[53%]" />
-    </div>
+    <span
+      role={label ? 'img' : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+      className={`block bg-current ${className ?? ''}`}
+      style={style}
+    />
   )
+}
+
+// "Royeel" in the logo's script.
+export function Wordmark({ className, label = 'Royeel' }: { className?: string; label?: string | null }) {
+  return <Mark src="/brand/mark-word.png" ratio="634 / 251" label={label ?? undefined} className={className} />
+}
+
+// The flourish under the name, used as a divider.
+export function Flourish({ className }: { className?: string }) {
+  return <Mark src="/brand/mark-flourish.png" ratio="461 / 83" className={className} />
 }

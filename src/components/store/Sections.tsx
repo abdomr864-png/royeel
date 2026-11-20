@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { cacheLife } from 'next/cache'
-import { Ornament, Swan, Tagline, Wordmark } from '@/components/brand/Logo'
+import { Flourish, Logo } from '@/components/brand/Logo'
 import type { Dictionary } from '@/lib/i18n/dictionaries'
 import type { Locale } from '@/lib/i18n/config'
 import { whatsappLink } from '@/lib/format'
@@ -171,7 +171,7 @@ export function Instagram({ t, url }: { t: Dictionary; url: string }) {
 
         <a
           {...link}
-          className="mt-9 inline-flex h-[3.25rem] items-center gap-2.5 rounded-full bg-burgundy px-8 text-[0.8125rem] font-semibold uppercase tracking-[0.12em] text-ivory shadow-[0_8px_20px_-6px_rgba(77,19,28,0.55)] transition-colors hover:bg-burgundy-deep md:mt-12 rtl:text-base rtl:tracking-normal"
+          className="mt-9 inline-flex h-[3.25rem] items-center gap-2.5 rounded-full bg-burgundy px-8 text-[0.8125rem] font-semibold uppercase tracking-[0.12em] text-ivory shadow-[0_8px_20px_-6px_rgba(91,11,24,0.55)] transition-colors hover:bg-burgundy-deep md:mt-12 rtl:text-base rtl:tracking-normal"
         >
           <InstagramIcon className="size-5" />
           {s.cta}
@@ -186,7 +186,7 @@ export function Faq({ t, locale }: { t: Dictionary; locale: Locale }) {
     <section className="bg-ivory-light px-5 py-24 md:px-10 md:py-32">
       <div className="mx-auto max-w-[760px]">
         <h2 className="text-center font-display text-[clamp(2rem,5vw,3.25rem)] font-light text-burgundy">{t.faq.heading}</h2>
-        <Ornament className="mx-auto mt-5 w-36 text-gold" />
+        <Flourish className="mx-auto mt-5 w-36 text-gold" />
         <div className="mt-12 border-t border-line">
           {t.faq.items.map((item) => (
             <details key={item.q} className="group border-b border-line">
@@ -227,12 +227,9 @@ export async function Footer({ t, locale, settings }: { t: Dictionary; locale: L
   ].filter((s) => s.href)
   const year = await currentYear()
   return (
-    <footer className="bg-burgundy-deep px-5 pb-28 pt-20 text-ivory md:px-10 md:pb-12">
+    <footer className="bg-burgundy px-5 pb-28 pt-20 text-ivory md:px-10 md:pb-12">
       <div className="mx-auto flex max-w-[1200px] flex-col items-center text-center">
-        <Swan className="w-20 text-ivory" />
-        <Wordmark className="mt-5 w-48" title="Royeel" />
-        <Ornament className="mt-3 w-32 text-gold-light/70" />
-        <Tagline className="mt-3 w-36 text-ivory/70" />
+        <Logo className="w-40 md:w-48" sizes="192px" />
         <p className="mt-6 max-w-xs text-sm text-ivory/55">{t.footer.about}</p>
 
         <nav className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-ivory/75">

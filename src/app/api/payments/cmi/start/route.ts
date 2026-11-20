@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 
   return new Response(
     `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Royeel — Paiement</title></head>
-<body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#4d131c;color:#f3ece3;font-family:Georgia,serif">
+<body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#5b0b18;color:#f6e8de;font-family:Georgia,serif">
 <form id="f" method="post" action="${esc(CMI_GATEWAY_URL)}">${inputs}<noscript><button type="submit">Continuer vers le paiement</button></noscript></form>
 <p>Redirection vers le paiement sécurisé…</p>
 <script>document.getElementById('f').submit()</script>

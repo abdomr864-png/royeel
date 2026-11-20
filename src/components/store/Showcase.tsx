@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Swan } from '@/components/brand/Logo'
+import { Flourish } from '@/components/brand/Logo'
 import type { Dictionary } from '@/lib/i18n/dictionaries'
 import type { Locale } from '@/lib/i18n/config'
 import { formatPrice } from '@/lib/format'
@@ -32,12 +32,12 @@ export function Accent({ text }: { text: string }) {
   )
 }
 
-// "LES DÉTAILS" followed by the swan, as a section title.
+// "LES DÉTAILS" above the logo's flourish, as a section title.
 export function SectionHeading({ children }: { children: string }) {
   return (
-    <h2 className="flex items-center justify-center gap-3 text-center font-display text-[1.75rem] font-medium uppercase tracking-[0.06em] text-ink md:text-[2.125rem] rtl:tracking-normal">
+    <h2 className="flex flex-col items-center gap-2 text-center font-display text-[1.75rem] font-medium uppercase tracking-[0.06em] text-ink md:text-[2.125rem] rtl:tracking-normal">
       {children}
-      <Swan className="h-7 w-auto text-burgundy md:h-9" />
+      <Flourish className="h-3 text-gold md:h-4" />
     </h2>
   )
 }
@@ -60,7 +60,7 @@ export function ProductCard({ product, locale, t }: { product: Product; locale: 
     <Link
       href={productPath(locale, product)}
       prefetch
-      className={`group ${card} transition-[translate,box-shadow] duration-300 ease-luxe hover:-translate-y-1 hover:shadow-[0_22px_44px_-22px_rgba(42,20,24,0.35)]`}
+      className={`group ${card} transition-[translate,box-shadow] duration-300 ease-luxe hover:-translate-y-1 hover:shadow-[0_22px_44px_-22px_rgba(58,10,18,0.35)]`}
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-ivory-dark">
         {first ? (

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { Ornament } from '@/components/brand/Logo'
+import { Flourish } from '@/components/brand/Logo'
 import { ClearCart } from '@/components/store/Checkout'
 import { WhatsAppIcon } from '@/components/store/icons'
 import { getStorefront } from '@/lib/catalog'
@@ -62,14 +62,14 @@ async function Receipt({ locale, orderId }: { locale: Locale; orderId: Promise<s
         <Sparkle className="absolute -start-8 top-10 size-5 animate-pulse text-gold" />
         <Sparkle className="absolute -end-6 top-1/3 size-3.5 animate-pulse text-gold-light [animation-delay:0.6s]" />
         <Sparkle className="absolute -start-4 bottom-16 size-3 animate-pulse text-gold-light [animation-delay:1.2s]" />
-        <div className="relative aspect-[4/5] overflow-hidden rounded-b-[28px] rounded-t-[min(31vw,125px)] border-[6px] border-white bg-ivory-dark shadow-[0_24px_50px_-20px_rgba(77,19,28,0.35)]">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-b-[28px] rounded-t-[min(31vw,125px)] border-[6px] border-white bg-ivory-dark shadow-[0_24px_50px_-20px_rgba(91,11,24,0.35)]">
           {photo ? (
             <Image src={mediaUrl(photo)} alt="" fill preload sizes="250px" className="object-cover object-top" />
           ) : (
-            <Ornament className="absolute inset-x-8 top-1/2 -translate-y-1/2 text-gold" />
+            <Flourish className="absolute inset-x-8 top-1/2 -translate-y-1/2 text-gold" />
           )}
         </div>
-        <span className="absolute -bottom-3 -end-3 grid size-16 animate-[pop_0.5s_cubic-bezier(0.22,1,0.36,1)_0.2s_both] place-items-center rounded-full border-4 border-ivory-light bg-burgundy text-ivory shadow-[0_10px_24px_-6px_rgba(77,19,28,0.55)]">
+        <span className="absolute -bottom-3 -end-3 grid size-16 animate-[pop_0.5s_cubic-bezier(0.22,1,0.36,1)_0.2s_both] place-items-center rounded-full border-4 border-ivory-light bg-burgundy text-ivory shadow-[0_10px_24px_-6px_rgba(91,11,24,0.55)]">
           <svg viewBox="0 0 24 24" className="size-7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M5 12.5l4.5 4.5L19 7.5" />
           </svg>
@@ -80,7 +80,7 @@ async function Receipt({ locale, orderId }: { locale: Locale; orderId: Promise<s
       <h1 className="mt-4 font-display text-[2.5rem] font-medium leading-[1.1] text-ink md:text-[3.25rem] rtl:leading-[1.4]">
         {t.thanks.heading[0]} <em className="text-gold rtl:not-italic">{t.thanks.heading[1]}</em>
       </h1>
-      <Ornament className="mx-auto mt-4 w-28 text-gold" />
+      <Flourish className="mx-auto mt-4 w-28 text-gold" />
       <p className="mx-auto mt-5 max-w-[440px] leading-relaxed text-mute">{t.thanks.team}</p>
 
       {cardState ? (
@@ -94,7 +94,7 @@ async function Receipt({ locale, orderId }: { locale: Locale; orderId: Promise<s
         </div>
       ) : null}
 
-      <div className="mt-8 rounded-[22px] border border-line bg-white/80 px-5 py-2 text-start text-[0.9375rem] shadow-[0_20px_50px_-30px_rgba(77,19,28,0.25)] backdrop-blur md:px-7">
+      <div className="mt-8 rounded-[22px] border border-line bg-white/80 px-5 py-2 text-start text-[0.9375rem] shadow-[0_20px_50px_-30px_rgba(91,11,24,0.25)] backdrop-blur md:px-7">
         <Line label={t.thanks.number} value={ref} />
         {receipt.items.map((i) => (
           <div key={`${i.product_name}-${i.color_name}-${i.size_label}`}>
@@ -165,7 +165,7 @@ function BackButton({ locale, label }: { locale: Locale; label: string }) {
   return (
     <Link
       href={`/${locale}`}
-      className="mt-8 flex h-14 w-full items-center justify-center rounded-full bg-burgundy text-[0.8125rem] font-semibold uppercase tracking-[0.16em] text-ivory shadow-[0_10px_24px_-8px_rgba(77,19,28,0.55)] transition-colors hover:bg-burgundy-deep rtl:text-base rtl:tracking-normal"
+      className="mt-8 flex h-14 w-full items-center justify-center rounded-full bg-burgundy text-[0.8125rem] font-semibold uppercase tracking-[0.16em] text-ivory shadow-[0_10px_24px_-8px_rgba(91,11,24,0.55)] transition-colors hover:bg-burgundy-deep rtl:text-base rtl:tracking-normal"
     >
       {label}
     </Link>

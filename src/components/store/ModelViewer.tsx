@@ -21,7 +21,7 @@ export default function ModelViewer({ url, label }: { url: string; label: string
     >
       <ambientLight intensity={0.6} />
       <directionalLight position={[3, 4, 5]} intensity={1.6} />
-      <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#d8bf8c" />
+      <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#edc9ba" />
       <Suspense fallback={null}>
         <Bounds fit clip observe margin={1.15}>
           <Model url={url} />

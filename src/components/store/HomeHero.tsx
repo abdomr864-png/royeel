@@ -111,7 +111,7 @@ export function HomeHero() {
             href={href}
             prefetch
             aria-label={name}
-            className="relative block aspect-[4/5] w-full max-w-[440px] overflow-hidden rounded-3xl bg-ivory-dark shadow-[0_30px_50px_-20px_rgba(42,20,24,0.4)]"
+            className="relative block aspect-[4/5] w-full max-w-[440px] overflow-hidden rounded-3xl bg-ivory-dark shadow-[0_30px_50px_-20px_rgba(58,10,18,0.4)]"
           >
             {image ? (
               <Image

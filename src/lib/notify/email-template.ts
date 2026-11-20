@@ -40,34 +40,34 @@ export function orderEmailHtml({
   const rows = order.order_items
     .map(
       (i) => `<tr>
-  <td style="padding:10px 0;border-bottom:1px solid #e6dccf;text-align:${align}">${esc(i.product_name)}${i.color_name ? ` · ${esc(i.color_name)}` : ''} — ${t.checkout.size} ${esc(i.size_label)} × ${i.quantity}</td>
-  <td style="padding:10px 0;border-bottom:1px solid #e6dccf;text-align:${locale === 'ar' ? 'left' : 'right'};white-space:nowrap">${formatPrice(i.unit_price_mad * i.quantity, locale)}</td>
+  <td style="padding:10px 0;border-bottom:1px solid #efd9cc;text-align:${align}">${esc(i.product_name)}${i.color_name ? ` · ${esc(i.color_name)}` : ''} — ${t.checkout.size} ${esc(i.size_label)} × ${i.quantity}</td>
+  <td style="padding:10px 0;border-bottom:1px solid #efd9cc;text-align:${locale === 'ar' ? 'left' : 'right'};white-space:nowrap">${formatPrice(i.unit_price_mad * i.quantity, locale)}</td>
 </tr>`,
     )
     .join('')
   const steps = t.thanks.steps[order.payment_method].map((s) => `<li style="margin:0 0 6px">${esc(s)}</li>`).join('')
   const bankBlock = bank
-    ? `<div style="margin:24px 0;padding:16px 20px;background:#f3ece3">
+    ? `<div style="margin:24px 0;padding:16px 20px;background:#f6e8de">
   <p style="margin:0 0 8px;font-weight:bold">${t.thanks.bank.title}</p>
   <p style="margin:0">${t.thanks.bank.name} : ${esc(bank.bank_name)}<br>${t.thanks.bank.holder} : ${esc(bank.bank_account_holder)}<br>${t.thanks.bank.rib} : <span style="font-family:monospace">${esc(bank.bank_rib)}</span><br>${t.thanks.bank.amount} : ${formatPrice(order.total_mad, locale)}</p>
 </div>`
     : ''
   const whatsapp = whatsappNumber
-    ? `<p style="margin:24px 0 0"><a href="${whatsappLink(whatsappNumber, t.thanks.whatsappMessage(ref))}" style="color:#4d131c">${t.thanks.contact}</a></p>`
+    ? `<p style="margin:24px 0 0"><a href="${whatsappLink(whatsappNumber, t.thanks.whatsappMessage(ref))}" style="color:#5b0b18">${t.thanks.contact}</a></p>`
     : ''
-  const logo = siteUrl ? `<img src="${siteUrl}/brand/logo-email.png" alt="Royeel" width="140" style="display:block;margin:0 auto">` : '<div style="font-family:Georgia,serif;font-size:28px;letter-spacing:6px;color:#f3ece3">ROYEEL</div>'
+  const logo = siteUrl ? `<img src="${siteUrl}/brand/logo-email.png" alt="Royeel" width="140" style="display:block;margin:0 auto">` : '<div style="font-family:Georgia,serif;font-size:28px;letter-spacing:6px;color:#f6e8de">ROYEEL</div>'
 
   return `<!doctype html>
 <html lang="${locale}" dir="${dir}">
-<body style="margin:0;background:#faf6f0;font-family:Helvetica,Arial,sans-serif;color:#2a1418">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf6f0">
+<body style="margin:0;background:#fbf3ee;font-family:Helvetica,Arial,sans-serif;color:#3a0a12">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fbf3ee">
     <tr><td align="center" style="padding:24px 12px">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff">
-        <tr><td align="center" style="background:#4d131c;padding:32px 24px">${logo}</td></tr>
+        <tr><td align="center" style="background:#5b0b18;padding:32px 24px">${logo}</td></tr>
         <tr><td style="padding:32px 28px;text-align:${align}" dir="${dir}">
-          <h1 style="margin:0;font-family:Georgia,serif;font-weight:normal;font-size:30px;color:#4d131c">${t.thanks.title}</h1>
+          <h1 style="margin:0;font-family:Georgia,serif;font-weight:normal;font-size:30px;color:#5b0b18">${t.thanks.title}</h1>
           <p style="margin:8px 0 0;font-size:15px">${esc(t.thanks.subtitle(order.full_name.split(' ')[0]))}</p>
-          <p style="margin:16px 0 0;font-size:13px;letter-spacing:2px;color:#b8975a">${t.thanks.number} ${ref}</p>
+          <p style="margin:16px 0 0;font-size:13px;letter-spacing:2px;color:#c38b78">${t.thanks.number} ${ref}</p>
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;font-size:14px">
             ${rows}
             <tr><td style="padding:10px 0;text-align:${align}">${t.checkout.shipping}</td><td style="padding:10px 0;text-align:${locale === 'ar' ? 'left' : 'right'}">${order.shipping_mad ? formatPrice(order.shipping_mad, locale) : t.checkout.free}</td></tr>
@@ -76,10 +76,10 @@ export function orderEmailHtml({
           <p style="margin:24px 0 8px;font-weight:bold">${t.thanks.next}</p>
           <ol style="margin:0;padding-${align}:20px;font-size:14px;line-height:1.5">${steps}</ol>
           ${bankBlock}
-          <p style="margin:24px 0 0;font-size:13px;color:#76635f">${esc(order.address)}, ${esc(order.city)}</p>
+          <p style="margin:24px 0 0;font-size:13px;color:#7d5a55">${esc(order.address)}, ${esc(order.city)}</p>
           ${whatsapp}
         </td></tr>
-        <tr><td align="center" style="padding:20px;font-size:12px;color:#76635f;border-top:1px solid #e6dccf">Royeel — Uniquely yours.</td></tr>
+        <tr><td align="center" style="padding:20px;font-size:12px;color:#7d5a55;border-top:1px solid #efd9cc">Royeel — Uniquely yours.</td></tr>
       </table>
     </td></tr>
   </table>

@@ -211,7 +211,7 @@ export function ProductView({ product }: { product: Product }) {
               <p className="font-display text-[2.5rem] font-semibold leading-none text-burgundy">{price}</p>
               <span
                 className={`rounded-full px-3 py-1.5 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] rtl:text-xs rtl:tracking-normal ${
-                  soldOut ? 'bg-ivory-dark text-mute' : 'bg-burgundy text-ivory shadow-[0_4px_10px_-2px_rgba(77,19,28,0.4)]'
+                  soldOut ? 'bg-ivory-dark text-mute' : 'bg-burgundy text-ivory shadow-[0_4px_10px_-2px_rgba(91,11,24,0.4)]'
                 }`}
               >
                 {soldOut ? t.product.outOfStock : t.product.new}
@@ -308,7 +308,7 @@ export function ProductView({ product }: { product: Product }) {
                         out
                           ? 'cursor-not-allowed border-line text-mute/50'
                           : on
-                            ? 'border-burgundy bg-burgundy text-ivory shadow-[0_4px_12px_-2px_rgba(77,19,28,0.3)]'
+                            ? 'border-burgundy bg-burgundy text-ivory shadow-[0_4px_12px_-2px_rgba(91,11,24,0.3)]'
                             : 'border-line bg-white text-ink hover:border-burgundy'
                       }`}
                     >
@@ -465,7 +465,7 @@ export function ProductView({ product }: { product: Product }) {
                 <button
                   type="submit"
                   disabled={soldOut || pending || methods.length === 0}
-                  className="group flex h-[3.75rem] w-full items-center justify-center gap-2.5 rounded-[14px] bg-burgundy px-6 text-[0.875rem] font-semibold uppercase tracking-[0.12em] text-ivory shadow-[0_8px_20px_-6px_rgba(77,19,28,0.55)] transition-[background-color,translate,box-shadow] duration-300 ease-luxe hover:-translate-y-0.5 hover:bg-burgundy-deep disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-mute/60 disabled:shadow-none rtl:text-base rtl:tracking-normal"
+                  className="group flex h-[3.75rem] w-full items-center justify-center gap-2.5 rounded-[14px] bg-burgundy px-6 text-[0.875rem] font-semibold uppercase tracking-[0.12em] text-ivory shadow-[0_8px_20px_-6px_rgba(91,11,24,0.55)] transition-[background-color,translate,box-shadow] duration-300 ease-luxe hover:-translate-y-0.5 hover:bg-burgundy-deep disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-mute/60 disabled:shadow-none rtl:text-base rtl:tracking-normal"
                 >
                   {soldOut ? (
                     t.product.outOfStock
@@ -609,7 +609,7 @@ function Gallery({ product, images, badge }: { product: Product; images: Product
         </div>
 
         {badge ? (
-          <span className="pointer-events-none absolute start-4 top-4 rounded-full bg-burgundy px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-[0.14em] text-ivory shadow-[0_6px_14px_-4px_rgba(77,19,28,0.5)] rtl:text-xs rtl:tracking-normal">
+          <span className="pointer-events-none absolute start-4 top-4 rounded-full bg-burgundy px-3.5 py-1.5 text-[0.625rem] font-bold uppercase tracking-[0.14em] text-ivory shadow-[0_6px_14px_-4px_rgba(91,11,24,0.5)] rtl:text-xs rtl:tracking-normal">
             {badge}
           </span>
         ) : null}
@@ -647,7 +647,7 @@ function Gallery({ product, images, badge }: { product: Product; images: Product
               aria-label={t.product.photo(i + 1, images.length)}
               aria-current={i === active}
               className={`relative aspect-[3/4] overflow-hidden rounded-[10px] border-2 bg-ivory-dark transition-[border-color,box-shadow,translate] duration-300 ease-luxe ${
-                i === active ? 'border-burgundy shadow-[0_0_0_4px_rgba(77,19,28,0.1)]' : 'border-transparent hover:-translate-y-0.5 hover:border-line'
+                i === active ? 'border-burgundy shadow-[0_0_0_4px_rgba(91,11,24,0.1)]' : 'border-transparent hover:-translate-y-0.5 hover:border-line'
               }`}
             >
               <Image src={mediaUrl(img.path)} alt="" fill sizes="(min-width: 1024px) 84px, 25vw" className="object-cover object-top" />

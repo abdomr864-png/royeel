@@ -275,7 +275,6 @@ const fr = {
     instagram: 'Suivre sur Instagram',
     whatsapp: 'Nous écrire sur WhatsApp',
     whatsappMessage: 'Bonjour Royeel, j’aimerais être prévenue de la sortie de la collection.',
-    photo: 'Cygne blanc sur une page de journal ancien déchirée',
     made: 'Confectionné au Maroc',
     otherLanguage: { href: '/ar', label: 'العربية' },
   },
