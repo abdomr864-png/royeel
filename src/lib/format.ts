@@ -1,3 +1,4 @@
+import { CITIES } from './cities'
 import type { Locale } from './i18n/config'
 
 // 1500 -> "1 500 DH" (fr) / "1 500 درهم" (ar), Western digits in both, which is
@@ -44,4 +45,53 @@ export function displayPhone(e164: string) {
 export function whatsappLink(number: string, text?: string) {
   const n = number.replace(/\D/g, '')
   return `https://wa.me/${n}${text ? `?text=${encodeURIComponent(text)}` : ''}`
+}
+
+// The Ozon Express place a customer typed, spelled as Ozon spells it, or null
+// when Ozon does not deliver there. Ignores case, accents, dashes, Arabic
+// glosses and a "ville" suffix (Ozon writes "KENITRA VILLE", "Tinghir ville").
+export function matchCity(input: string): string | null {
+  const key = cityKey(input)
+  if (!key) return null
+  const alias = CITY_ALIASES[key]
+  if (alias) return alias
+  return CITIES.find((c) => cityKey(c) === key) ?? CITIES.find((c) => bareKey(c) === bareKey(input)) ?? null
+}
+
+// Usual spellings of places Ozon writes differently.
+const CITY_ALIASES: Record<string, string> = {
+  ifrane: 'IFRAN',
+  settat: 'Settate',
+  ouarzazate: 'Ouarzazat',
+  'el hajeb': 'ElHajeb VILLE',
+  'fquih ben salah': 'fquih ben saleh',
+  'kelaa sraghna': 'Kelâa des Sraghna',
+  'kalaat sraghna': 'Kelâa des Sraghna',
+  'oued zem': 'Oued zem',
+  'ben guerir': 'Ben Guerir',
+  benguerir: 'Ben Guerir',
+  'm diq': 'M Diq',
+  mdiq: 'M Diq',
+  hoceima: 'Al Hoceima',
+  'el hoceima': 'Al Hoceima',
+  laayoune: 'Laayoune-ville',
+  smara: 'Essemara-السمارة',
+  'es semara': 'Essemara-السمارة',
+  inezgane: 'Inzegane',
+  'tan tan': 'TANTAN',
+  'sidi slimane': 'SIDI SLIMAN',
+}
+
+function cityKey(name: string) {
+  return name
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replace(/\p{Script=Arabic}/gu, ' ')
+    .toLowerCase()
+    .replace(/[\s\-–—_:()/’']+/g, ' ')
+    .trim()
+}
+
+function bareKey(name: string) {
+  return cityKey(name).replace(/^ville | ville$/g, '')
 }

@@ -5,7 +5,7 @@ import { after } from 'next/server'
 import { updateTag } from 'next/cache'
 import { z } from 'zod'
 import { STORE_TAG } from '@/lib/catalog'
-import { normalizeMoroccanPhone } from '@/lib/format'
+import { matchCity, normalizeMoroccanPhone } from '@/lib/format'
 import { isSupabaseConfigured } from '@/lib/supabase/env'
 import { createPublicClient } from '@/lib/supabase/public'
 import { notifyNewOrder } from '@/lib/notify'
@@ -52,7 +52,8 @@ const input = z.object({
   fullName: z.string().trim().min(2, 'INVALID_NAME').max(120, 'INVALID_NAME'),
   phone: z.string().max(40, 'INVALID_PHONE'),
   email: z.union([z.literal(''), z.email('INVALID_EMAIL').max(200, 'INVALID_EMAIL')]).default(''),
-  city: z.string().trim().min(2, 'INVALID_CITY').max(80, 'INVALID_CITY'),
+  // Only places Ozon Express delivers to, saved with Ozon's spelling.
+  city: z.string().max(80, 'INVALID_CITY').transform((c, ctx) => matchCity(c) ?? (ctx.addIssue({ code: 'custom', message: 'INVALID_CITY' }), z.NEVER)),
   address: z.string().trim().min(5, 'INVALID_ADDRESS').max(300, 'INVALID_ADDRESS'),
   source: z.enum(ORDER_SOURCES, 'INVALID_SOURCE').nullable(),
   paymentMethod: z.enum(PAYMENT_METHODS, 'PAYMENT_METHOD_UNAVAILABLE'),

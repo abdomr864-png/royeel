@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
-import { formatPrice, normalizeMoroccanPhone, whatsappLink } from '@/lib/format'
+import { CITIES } from '@/lib/cities'
+import { formatPrice, matchCity, normalizeMoroccanPhone, whatsappLink } from '@/lib/format'
 import { lines, pick } from '@/lib/localize'
 import { placeOrder, type OrderErrorCode } from '@/lib/orders/actions'
 import { colorsOf, defaultColor, imagesFor, isSoldOut, sizesFor } from '@/lib/product'
@@ -14,7 +15,6 @@ import { mediaUrl } from '@/lib/supabase/env'
 import { getAttribution, guessSource } from '@/lib/tracking/attribution'
 import { adCookies, track } from '@/lib/tracking/client'
 import { ORDER_SOURCES, PAYMENT_METHODS, type OrderSource, type PaymentMethod, type Product, type ProductImage } from '@/lib/types'
-import { CITIES } from './Checkout'
 import { ChevronIcon, CloseIcon, CubeIcon, PerkIcon, UserIcon, WhatsAppIcon } from './icons'
 import { QuantityStepper } from './QuantityStepper'
 import { lockScroll, scrollToId } from './scroll'
@@ -134,12 +134,13 @@ export function ProductView({ product }: { product: Product }) {
     const fd = new FormData(form)
     const value = (k: string) => String(fd.get(k) ?? '').trim()
     const phone = value('phone')
+    const city = matchCity(value('city'))
 
     // Quick checks before the round trip; the server checks everything again.
     const local: [boolean, OrderErrorCode][] = [
       [value('fullName').length >= 2, 'INVALID_NAME'],
       [normalizeMoroccanPhone(phone) !== null, 'INVALID_PHONE'],
-      [value('city').length >= 2, 'INVALID_CITY'],
+      [city !== null, 'INVALID_CITY'],
       [value('address').length >= 5, 'INVALID_ADDRESS'],
       [method !== null, 'PAYMENT_METHOD_UNAVAILABLE'],
     ]
@@ -156,7 +157,7 @@ export function ProductView({ product }: { product: Product }) {
         fullName: value('fullName'),
         phone,
         email: value('email'),
-        city: value('city'),
+        city: city ?? '',
         address: value('address'),
         source: source ?? guessSource(attribution) ?? null,
         paymentMethod: method!,
@@ -386,8 +387,8 @@ export function ProductView({ product }: { product: Product }) {
                     />
                   </div>
                   <datalist id="ma-cities">
-                    {CITIES.map(([fr, ar]) => (
-                      <option key={fr} value={locale === 'ar' ? ar : fr} />
+                    {CITIES.map((city) => (
+                      <option key={city} value={city} />
                     ))}
                   </datalist>
                   <input

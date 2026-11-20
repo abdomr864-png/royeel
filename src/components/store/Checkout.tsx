@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
-import { formatPrice, normalizeMoroccanPhone } from '@/lib/format'
+import { CITIES } from '@/lib/cities'
+import { formatPrice, matchCity, normalizeMoroccanPhone } from '@/lib/format'
 import { pick } from '@/lib/localize'
 import { mediaUrl } from '@/lib/supabase/env'
 import { placeOrder, type OrderErrorCode } from '@/lib/orders/actions'
@@ -18,33 +19,6 @@ import { BagIcon, CloseIcon } from './icons'
 import { QuantityStepper } from './QuantityStepper'
 import { maxQuantity, useStore } from './StoreContext'
 import { primaryButton, secondaryButton } from './ui'
-
-export const CITIES = [
-  ['Casablanca', 'الدار البيضاء'],
-  ['Rabat', 'الرباط'],
-  ['Marrakech', 'مراكش'],
-  ['Tanger', 'طنجة'],
-  ['Fès', 'فاس'],
-  ['Agadir', 'أكادير'],
-  ['Meknès', 'مكناس'],
-  ['Oujda', 'وجدة'],
-  ['Kénitra', 'القنيطرة'],
-  ['Tétouan', 'تطوان'],
-  ['Salé', 'سلا'],
-  ['Témara', 'تمارة'],
-  ['Mohammedia', 'المحمدية'],
-  ['El Jadida', 'الجديدة'],
-  ['Béni Mellal', 'بني ملال'],
-  ['Nador', 'الناظور'],
-  ['Safi', 'آسفي'],
-  ['Laâyoune', 'العيون'],
-  ['Dakhla', 'الداخلة'],
-  ['Essaouira', 'الصويرة'],
-  ['Ifrane', 'إفران'],
-  ['Al Hoceïma', 'الحسيمة'],
-  ['Khouribga', 'خريبكة'],
-  ['Settat', 'سطات'],
-]
 
 type Field = 'fullName' | 'phone' | 'email' | 'city' | 'address' | 'source' | 'payment'
 
@@ -148,12 +122,13 @@ function CheckoutForm() {
     const fd = new FormData(form)
     const value = (k: string) => String(fd.get(k) ?? '').trim()
     const phone = value('phone')
+    const city = matchCity(value('city'))
 
     // Quick checks before the round trip; the server checks everything again.
     const local: [boolean, OrderErrorCode][] = [
       [value('fullName').length >= 2, 'INVALID_NAME'],
       [normalizeMoroccanPhone(phone) !== null, 'INVALID_PHONE'],
-      [value('city').length >= 2, 'INVALID_CITY'],
+      [city !== null, 'INVALID_CITY'],
       [value('address').length >= 5, 'INVALID_ADDRESS'],
       [method !== null, 'PAYMENT_METHOD_UNAVAILABLE'],
       [cart.length > 0, 'EMPTY_CART'],
@@ -171,7 +146,7 @@ function CheckoutForm() {
         fullName: value('fullName'),
         phone,
         email: value('email'),
-        city: value('city'),
+        city: city ?? '',
         address: value('address'),
         source,
         paymentMethod: method!,
@@ -251,8 +226,8 @@ function CheckoutForm() {
             />
           </label>
           <datalist id="ma-cities">
-            {CITIES.map(([fr, ar]) => (
-              <option key={fr} value={locale === 'ar' ? ar : fr} />
+            {CITIES.map((city) => (
+              <option key={city} value={city} />
             ))}
           </datalist>
           <label className={label}>
