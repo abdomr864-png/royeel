@@ -36,7 +36,7 @@ const ar: Dictionary = {
     story: {
       eyebrow: 'قصتنا',
       title: ['وُلدت في المغرب.', 'صُمّمت لأجلك.'],
-      photo: 'أوراق تحمل شعار Royeel على الأرض',
+      photo: 'شعار Royeel: بجعة في إطار عتيق',
       tag: 'Royeel · المغرب',
       chapter: 'الفصل 01',
       heading: ['دار مغربية،', 'ومجموعة أولى.'],
@@ -59,7 +59,7 @@ const ar: Dictionary = {
       photos: [
         'Becoming her',
         'آلة كاتبة بلون عنابي: «You look like my next client»',
-        'أوراق تحمل شعار Royeel على الأرض',
+        'شعار Royeel: بجعة في إطار عتيق',
         'بجعة بيضاء على صفحة جريدة قديمة ممزقة',
       ],
     },

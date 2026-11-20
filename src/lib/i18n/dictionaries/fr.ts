@@ -34,7 +34,7 @@ const fr = {
     story: {
       eyebrow: 'Notre histoire',
       title: ['Née au Maroc.', 'Pensée pour vous.'],
-      photo: 'Feuilles au logo Royeel posées au sol',
+      photo: 'Le logo Royeel : un cygne dans un cadre ancien',
       tag: 'Royeel · Maroc',
       chapter: 'Chapitre 01',
       heading: ['Une maison marocaine,', 'une première collection.'],
@@ -57,7 +57,7 @@ const fr = {
       photos: [
         'Becoming her',
         'Machine à écrire bordeaux : « You look like my next client »',
-        'Feuilles au logo Royeel posées au sol',
+        'Le logo Royeel : un cygne dans un cadre ancien',
         'Cygne blanc sur une page de journal ancien déchirée',
       ],
     },

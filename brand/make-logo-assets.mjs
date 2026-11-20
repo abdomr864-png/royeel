@@ -95,5 +95,16 @@ await (await onBordeaux(files['logo-cameo.png'], 48, 48, 0.92)).toFile(`${OUT}/f
 await (await onBordeaux(files['logo-full.png'], 1200, 630, 0.86)).toFile(`${OUT}/og.png`)
 // E-mail header (shown at 140 px wide, drawn at twice that).
 await (await onBordeaux(files['logo-full.png'], 280, 466, 1)).toFile(`${OUT}/logo-email.png`)
+// Brand card for the "Notre histoire" and Instagram sections (4:5).
+await (await onBordeaux(files['logo-full.png'], 1080, 1350, 0.66)).jpeg({ quality: 90 }).toFile(`${OUT}/hero/royeel-logo-card.jpg`)
 
-console.log('Logo files written to', OUT)
+// Social media kit, to upload by hand.
+const KIT = 'brand/kit'
+// Profile pictures are cropped to a circle: the cameo stays inside it.
+await (await onBordeaux(files['logo-cameo.png'], 1080, 1080, 0.7)).toFile(`${KIT}/profil-instagram-whatsapp.png`)
+await (await onBordeaux(files['logo-full.png'], 1080, 1080, 0.82)).toFile(`${KIT}/publication-carree.png`)
+await (await onBordeaux(files['logo-full.png'], 1080, 1920, 0.6)).toFile(`${KIT}/story.png`)
+await (await onBordeaux(files['logo-full.png'], 1640, 624, 0.84)).toFile(`${KIT}/couverture-facebook.png`)
+await sharp(files['logo-full.png']).toFile(`${KIT}/logo-transparent-sur-bordeaux.png`)
+
+console.log('Logo files written to', OUT, 'and', KIT)

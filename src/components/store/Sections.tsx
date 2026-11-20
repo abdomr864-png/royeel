@@ -73,7 +73,7 @@ export function Story({ t, href }: { t: Dictionary; href: string }) {
 
         <div className="mt-10 grid items-center gap-9 md:mt-16 md:grid-cols-2 md:gap-14">
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-burgundy-deep">
-            <Image src="/brand/hero/royeel-sheets.jpg" alt={s.photo} fill sizes="(min-width: 768px) 50vw, 92vw" className="object-cover" />
+            <Image src="/brand/hero/royeel-logo-card.jpg" alt={s.photo} fill sizes="(min-width: 768px) 50vw, 92vw" className="object-cover" />
             <span className="absolute start-5 top-5 inline-flex items-center gap-2 rounded-full bg-ivory-light/95 px-3.5 py-2 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-ink rtl:text-xs rtl:tracking-normal">
               <span className="size-1.5 rounded-full bg-burgundy" />
               {s.tag}
@@ -127,7 +127,7 @@ export function Story({ t, href }: { t: Dictionary; href: string }) {
 const INSTAGRAM_PHOTOS = [
   '/brand/hero/becoming-her.jpg',
   '/brand/hero/next-client.jpg',
-  '/brand/hero/royeel-sheets.jpg',
+  '/brand/hero/royeel-logo-card.jpg',
   '/brand/hero/swan-newspaper.jpg',
 ]
 
