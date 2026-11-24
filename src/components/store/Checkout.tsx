@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
-import { CITIES } from '@/lib/cities'
+import { CityOptions } from './CityOptions'
 import { formatPrice, matchCity, normalizeMoroccanPhone } from '@/lib/format'
 import { pick } from '@/lib/localize'
 import { mediaUrl } from '@/lib/supabase/env'
@@ -225,11 +225,7 @@ function CheckoutForm() {
               className={fieldClass('city')}
             />
           </label>
-          <datalist id="ma-cities">
-            {CITIES.map((city) => (
-              <option key={city} value={city} />
-            ))}
-          </datalist>
+          <CityOptions id="ma-cities" locale={locale} />
           <label className={label}>
             {t.checkout.address}
             {required}

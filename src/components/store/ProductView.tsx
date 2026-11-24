@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import { dictionaryFor } from '@/lib/i18n/dictionaries'
-import { CITIES } from '@/lib/cities'
+import { CityOptions } from './CityOptions'
 import { formatPrice, matchCity, normalizeMoroccanPhone, whatsappLink } from '@/lib/format'
 import { lines, pick } from '@/lib/localize'
 import { placeOrder, type OrderErrorCode } from '@/lib/orders/actions'
@@ -386,11 +386,7 @@ export function ProductView({ product }: { product: Product }) {
                       className={input('city')}
                     />
                   </div>
-                  <datalist id="ma-cities">
-                    {CITIES.map((city) => (
-                      <option key={city} value={city} />
-                    ))}
-                  </datalist>
+                  <CityOptions id="ma-cities" locale={locale} />
                   <input
                     name="address"
                     autoComplete="street-address"

@@ -1,4 +1,4 @@
-import { CITIES } from './cities'
+import { CITIES, CITIES_AR } from './cities'
 import type { Locale } from './i18n/config'
 
 // 1500 -> "1 500 DH" (fr) / "1 500 درهم" (ar), Western digits in both, which is
@@ -47,10 +47,15 @@ export function whatsappLink(number: string, text?: string) {
   return `https://wa.me/${n}${text ? `?text=${encodeURIComponent(text)}` : ''}`
 }
 
-// The Sendit place a customer typed, spelled as Sendit's import file wants it,
-// or null when Sendit does not deliver there. Ignores case, accents, dashes,
-// quotes, Arabic glosses and a "ville" prefix or suffix.
+// The Sendit place a customer typed (in Latin letters or in Arabic), spelled as
+// Sendit spells it, or null when Sendit does not deliver there. Ignores case,
+// accents, dashes, quotes and a "ville" prefix or suffix.
 export function matchCity(input: string): string | null {
+  const arabic = arabicKey(input)
+  if (arabic) {
+    const found = CITIES.find((c) => CITIES_AR[c] && arabicKey(CITIES_AR[c]) === arabic)
+    if (found) return found
+  }
   const key = cityKey(input)
   if (!key) return null
   const alias = CITY_ALIASES[key]
@@ -81,6 +86,8 @@ const CITY_ALIASES: Record<string, string> = {
   fez: 'Fes',
   tangier: 'Tanger',
   tetouan: 'Tetouan',
+  agdz: 'Agdz (zagoura)',
+  agdez: 'Agdz (zagoura)',
 }
 
 function cityKey(name: string) {
@@ -90,6 +97,18 @@ function cityKey(name: string) {
     .replace(/\p{Script=Arabic}/gu, ' ')
     .toLowerCase()
     .replace(/[\s\-–—_:()/’'"]+/g, ' ')
+    .trim()
+}
+
+// Arabic letters only, with the spellings that vary folded together
+// (hamza forms of alif, final ya and ta marbuta, short vowels, tatweel).
+function arabicKey(name: string) {
+  return name
+    .replace(/[ً-ٰٟـ]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/[^\p{Script=Arabic}]+/gu, ' ')
     .trim()
 }
 
