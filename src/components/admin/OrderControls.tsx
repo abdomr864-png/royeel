@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { logWhatsAppContact, saveOrderNote, setOrderStatus, setPaymentStatus } from '@/lib/admin/actions'
+import { logWhatsAppContact, saveDeliveryOptions, saveOrderNote, setOrderStatus, setPaymentStatus } from '@/lib/admin/actions'
 import { PAYMENT_STATUS_LABEL, STATUS_LABEL, STATUS_STYLE } from '@/lib/admin/labels'
 import { ORDER_STATUSES, PAYMENT_STATUSES, type OrderStatus, type PaymentStatus } from '@/lib/types'
 import { btn, input } from './ui'
@@ -148,5 +148,93 @@ export function WhatsAppButtons({ orderId, templates, phoneHref }: { orderId: st
         Appeler
       </a>
     </div>
+  )
+}
+
+type Tri = 'default' | 'yes' | 'no'
+const tri = (v: boolean | null): Tri => (v === null ? 'default' : v ? 'yes' : 'no')
+
+// What Ozon Express's courier needs to know about this parcel. Only the admin
+// sets these; the shop never asks customers.
+export function DeliveryForm({
+  orderId,
+  allowOpen,
+  allowTry,
+  isExchange,
+  note,
+  defaults,
+}: {
+  orderId: string
+  allowOpen: boolean | null
+  allowTry: boolean | null
+  isExchange: boolean
+  note: string
+  defaults: { open: boolean; try: boolean }
+}) {
+  const initial = { allow_open: tri(allowOpen), allow_try: tri(allowTry), is_exchange: isExchange, delivery_note: note }
+  const [value, setValue] = useState(initial)
+  const [pending, start] = useTransition()
+  const [msg, setMsg] = useState<string | null>(null)
+  const changed = JSON.stringify(value) !== JSON.stringify(initial)
+  const yesNo = (b: boolean) => (b ? 'Oui' : 'Non')
+  const select = (key: 'allow_open' | 'allow_try', label: string, fallback: boolean) => (
+    <label className="text-sm">
+      <span className="text-xs text-mute">{label}</span>
+      <select
+        value={value[key]}
+        onChange={(e) => setValue({ ...value, [key]: e.target.value as Tri })}
+        className={`${input} mt-1 py-2 text-sm`}
+      >
+        <option value="default">Par défaut ({yesNo(fallback)})</option>
+        <option value="yes">Oui</option>
+        <option value="no">Non</option>
+      </select>
+    </label>
+  )
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        start(async () => {
+          const res = await saveDeliveryOptions(orderId, value)
+          setMsg(res.ok ? (res.message ?? 'Enregistré.') : res.error)
+        })
+      }}
+      className="grid gap-3"
+    >
+      <div className="grid grid-cols-2 gap-3">
+        {select('allow_open', 'Autoriser l’ouverture', defaults.open)}
+        {select('allow_try', 'Autoriser l’essayage', defaults.try)}
+      </div>
+      <label className="flex cursor-pointer items-start gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={value.is_exchange}
+          onChange={(e) => setValue({ ...value, is_exchange: e.target.checked })}
+          className="mt-0.5 size-4 accent-burgundy"
+        />
+        <span>
+          <span className="font-medium text-ink">Colis d’échange</span>
+          <span className="block text-mute">Le livreur reprend l’ancien article en livrant le nouveau.</span>
+        </span>
+      </label>
+      <label className="text-sm">
+        <span className="text-xs text-mute">Note pour le livreur</span>
+        <textarea
+          value={value.delivery_note}
+          onChange={(e) => setValue({ ...value, delivery_note: e.target.value })}
+          rows={2}
+          maxLength={300}
+          placeholder="Ex. : appeler avant de passer, livrer après 18h."
+          className={`${input} mt-1`}
+        />
+      </label>
+      <div className="flex items-center gap-3">
+        <button type="submit" disabled={pending || !changed} className={btn.secondary}>
+          Enregistrer
+        </button>
+        {msg ? <span className="text-sm text-mute">{msg}</span> : null}
+      </div>
+    </form>
   )
 }

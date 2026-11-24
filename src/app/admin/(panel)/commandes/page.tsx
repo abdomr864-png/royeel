@@ -69,9 +69,19 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/com
         title="Commandes"
         subtitle={`${total} commande${total > 1 ? 's' : ''}${filters.status ? ` · ${STATUS_LABEL[filters.status]}` : ''}`}
         actions={
-          <a href={`/admin/export/commandes${qs({})}`} className={btn.secondary}>
-            Exporter (Excel)
-          </a>
+          <span className="flex flex-wrap gap-2">
+            <a
+              href={`/admin/export/ozon`}
+              download
+              title="Les commandes confirmées, au format du fichier d’import Ozon Express"
+              className={btn.primary}
+            >
+              Fichier Ozon Express ({byStatus.get('confirmed') ?? 0})
+            </a>
+            <a href={`/admin/export/commandes${qs({})}`} className={btn.secondary}>
+              Exporter (Excel)
+            </a>
+          </span>
         }
       />
 

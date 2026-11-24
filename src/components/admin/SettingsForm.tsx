@@ -51,6 +51,33 @@ export function SettingsForm({ settings, integrations }: { settings: Settings; i
         </div>
       </Card>
 
+      <Card title="Livraison Ozon Express">
+        <div className="grid gap-3 xl:grid-cols-3">
+          <Text
+            name="ozon_pickup_city"
+            label="Ville de ramassage"
+            value={s.ozon_pickup_city ?? 'Casablanca'}
+            placeholder="ex. Casablanca"
+            hint="Où Ozon vient chercher les colis."
+          />
+          <Toggle
+            name="ozon_allow_open"
+            checked={s.ozon_allow_open !== false}
+            title="Autoriser l’ouverture"
+            text="La cliente peut ouvrir le colis avant de payer. Modifiable commande par commande."
+          />
+          <Toggle
+            name="ozon_allow_try"
+            checked={s.ozon_allow_try !== false}
+            title="Autoriser l’essayage"
+            text="La cliente peut essayer le manteau devant le livreur. Modifiable commande par commande."
+          />
+        </div>
+        <p className="mt-3 text-sm text-mute">
+          Ces réglages remplissent le fichier « Fichier Ozon Express » de la page Commandes. Les clientes ne les voient pas.
+        </p>
+      </Card>
+
       <div className="grid gap-4 xl:grid-cols-2">
         <Card title="Modes de paiement">
           <div className="grid gap-3">

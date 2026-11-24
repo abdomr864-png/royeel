@@ -61,6 +61,31 @@ export async function saveOrderNote(orderId: string, note: string): Promise<Acti
   return { ok: true, message: 'Note enregistrée.' }
 }
 
+// Delivery options sent to Ozon Express. "default" follows the settings.
+const deliverySchema = z.object({
+  allow_open: z.enum(['default', 'yes', 'no']),
+  allow_try: z.enum(['default', 'yes', 'no']),
+  is_exchange: z.boolean(),
+  delivery_note: z.string().trim().max(300),
+})
+
+export async function saveDeliveryOptions(orderId: string, input: z.input<typeof deliverySchema>): Promise<ActionResult> {
+  const { supabase, userId } = await requireAdmin()
+  const parsed = deliverySchema.safeParse(input)
+  if (!parsed.success) return fail('Note pour le livreur trop longue (300 caractères au plus).')
+  const d = parsed.data
+  const tri = (v: 'default' | 'yes' | 'no') => (v === 'default' ? null : v === 'yes')
+  const { error } = await supabase
+    .from('orders')
+    .update({ allow_open: tri(d.allow_open), allow_try: tri(d.allow_try), is_exchange: d.is_exchange, delivery_note: d.delivery_note })
+    .eq('id', orderId)
+  const err = dbError(error)
+  if (err) return fail(err)
+  await supabase.from('order_events').insert({ order_id: orderId, kind: 'note', message: 'Options de livraison modifiées', created_by: userId })
+  refresh()
+  return { ok: true, message: 'Options de livraison enregistrées.' }
+}
+
 export async function logWhatsAppContact(orderId: string, template: string): Promise<void> {
   const { supabase, userId } = await requireAdmin()
   await supabase
@@ -446,6 +471,9 @@ const settingsSchema = z.object({
   meta_pixel_id: z.string().trim().regex(/^(\d{5,20})?$/),
   tiktok_pixel_id: z.string().trim().regex(/^([A-Za-z0-9]{5,40})?$/),
   coming_soon: z.boolean(),
+  ozon_pickup_city: z.string().trim().min(2).max(80),
+  ozon_allow_open: z.boolean(),
+  ozon_allow_try: z.boolean(),
 })
 
 const SETTINGS_ERRORS: Record<string, string> = {
@@ -458,6 +486,7 @@ const SETTINGS_ERRORS: Record<string, string> = {
   meta_pixel_id: 'ID du pixel Meta invalide (chiffres uniquement).',
   tiktok_pixel_id: 'ID du pixel TikTok invalide.',
   shipping_fee_mad: 'Frais de livraison invalides.',
+  ozon_pickup_city: 'Indiquez la ville de ramassage Ozon Express.',
 }
 
 const BOOLEAN_FIELDS = [
@@ -468,6 +497,8 @@ const BOOLEAN_FIELDS = [
   'notify_whatsapp_enabled',
   'notify_sms_enabled',
   'coming_soon',
+  'ozon_allow_open',
+  'ozon_allow_try',
 ] as const
 
 export async function saveSettings(formData: FormData): Promise<ActionResult> {

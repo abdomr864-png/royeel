@@ -60,26 +60,27 @@ export function matchCity(input: string): string | null {
 
 // Usual spellings of places Ozon writes differently.
 const CITY_ALIASES: Record<string, string> = {
-  ifrane: 'IFRAN',
-  settat: 'Settate',
-  ouarzazate: 'Ouarzazat',
-  'el hajeb': 'ElHajeb VILLE',
-  'fquih ben salah': 'fquih ben saleh',
-  'kelaa sraghna': 'Kelâa des Sraghna',
-  'kalaat sraghna': 'Kelâa des Sraghna',
-  'oued zem': 'Oued zem',
-  'ben guerir': 'Ben Guerir',
-  benguerir: 'Ben Guerir',
-  'm diq': 'M Diq',
-  mdiq: 'M Diq',
+  ifrane: 'Ifran',
+  larache: 'Laarache',
+  asilah: 'Assilah',
+  'el kelaa sraghna': 'El Kelaa Des Sraghna',
+  'kelaa des sraghna': 'El Kelaa Des Sraghna',
+  'kelaa sraghna': 'El Kelaa Des Sraghna',
+  'kalaat sraghna': 'El Kelaa Des Sraghna',
+  'fkih ben salah': 'Fquih Ben Salah',
+  'ben guerir': 'Benguerir',
+  'm diq': 'Mdiq',
   hoceima: 'Al Hoceima',
   'el hoceima': 'Al Hoceima',
-  laayoune: 'Laayoune-ville',
-  smara: 'Essemara-السمارة',
-  'es semara': 'Essemara-السمارة',
+  smara: 'Essemara',
+  semara: 'Essemara',
+  'es semara': 'Essemara',
   inezgane: 'Inzegane',
-  'tan tan': 'TANTAN',
-  'sidi slimane': 'SIDI SLIMAN',
+  'ait melloul': 'Aït Melloul',
+  marrakesh: 'Marrakech',
+  fez: 'Fes',
+  tangier: 'Tanger',
+  tetouan: 'Tetouan',
 }
 
 function cityKey(name: string) {
@@ -88,7 +89,7 @@ function cityKey(name: string) {
     .replace(/\p{M}/gu, '')
     .replace(/\p{Script=Arabic}/gu, ' ')
     .toLowerCase()
-    .replace(/[\s\-–—_:()/’']+/g, ' ')
+    .replace(/[\s\-–—_:()/’'"]+/g, ' ')
     .trim()
 }
 

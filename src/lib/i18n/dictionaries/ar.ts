@@ -128,7 +128,7 @@ const ar: Dictionary = {
     phone: 'رقم الهاتف',
     phonePlaceholder: '06 12 34 56 78',
     city: 'المدينة',
-    cityPlaceholder: 'اكتبي مدينتك بالحروف اللاتينية، مثلاً Casablanca – Maarif',
+    cityPlaceholder: 'اكتبي مدينتك بالحروف اللاتينية، مثلاً Casablanca - Maarif',
     address: 'عنوان التوصيل',
     addressPlaceholder: 'الشارع، الرقم، الحي',
     email: 'البريد الإلكتروني',

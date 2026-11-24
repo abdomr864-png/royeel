@@ -325,6 +325,22 @@ await test('the dashboard adds up live orders only', async () => {
   assert.ok(d.daily.length === 1)
 })
 
+await test('the admin sets Ozon Express delivery options; the public never sees them', async () => {
+  const s = await as('authenticated', adminId, `update public.store_settings set ozon_pickup_city = 'Casablanca', ozon_allow_try = false returning ozon_allow_open, ozon_allow_try`)
+  assert.deepEqual(s.rows[0], { ozon_allow_open: true, ozon_allow_try: false })
+  await as('authenticated', adminId, `update public.store_settings set ozon_allow_try = true`)
+  const o = await as(
+    'authenticated',
+    adminId,
+    `update public.orders set allow_open = false, is_exchange = true, delivery_note = 'Après 18h' where id = $1 returning allow_open, allow_try, is_exchange`,
+    [firstOrder.id],
+  )
+  assert.deepEqual(o.rows[0], { allow_open: false, allow_try: null, is_exchange: true })
+  await expectError(as('authenticated', adminId, `update public.orders set delivery_note = repeat('x', 301) where id = $1`, [firstOrder.id]), 'check constraint')
+  const pub = await as('anon', null, `select public.get_public_settings() as s`)
+  assert.equal('ozon_pickup_city' in pub.rows[0].s, false)
+})
+
 await test('the admin can edit the catalog and settings', async () => {
   const p = await as('authenticated', adminId, `update public.products set price_mad = 1490 returning price_mad`)
   assert.equal(p.rows[0].price_mad, 1490)

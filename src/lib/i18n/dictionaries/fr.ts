@@ -126,7 +126,7 @@ const fr = {
     phone: 'Téléphone',
     phonePlaceholder: '06 12 34 56 78',
     city: 'Ville',
-    cityPlaceholder: 'Tapez votre ville, ex. Casablanca – Maarif',
+    cityPlaceholder: 'Tapez votre ville, ex. Casablanca - Maarif',
     address: 'Adresse de livraison',
     addressPlaceholder: 'Rue, numéro, quartier',
     email: 'E-mail',

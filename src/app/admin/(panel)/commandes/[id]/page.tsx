@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { NoteForm, PaymentStatusSelect, StatusButtons, WhatsAppButtons, type WhatsAppTemplate } from '@/components/admin/OrderControls'
+import { DeliveryForm, NoteForm, PaymentStatusSelect, StatusButtons, WhatsAppButtons, type WhatsAppTemplate } from '@/components/admin/OrderControls'
 import { Card, PageHeader, StatusPill, WhatsAppPill } from '@/components/admin/ui'
 import { requireAdmin } from '@/lib/admin/auth'
 import { PAYMENT_METHOD_LABEL, PAYMENT_STATUS_LABEL, SOURCE_LABEL, STATUS_LABEL, whatsappBadge, type WhatsAppConfirmation } from '@/lib/admin/labels'
@@ -33,6 +33,10 @@ type Order = {
   shipping_mad: number
   total_mad: number
   admin_note: string
+  allow_open: boolean | null
+  allow_try: boolean | null
+  is_exchange: boolean
+  delivery_note: string
   customer_id: string | null
   whatsapp_confirmation: WhatsAppConfirmation
   whatsapp_sent_at: string | null
@@ -45,7 +49,10 @@ export default async function OrderPage({ params }: PageProps<'/admin/commandes/
   const { id } = await params
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
 
-  const { data } = await supabase.from('orders').select('*, order_items(*), order_events(*)').eq('id', id).single()
+  const [{ data }, { data: ozon }] = await Promise.all([
+    supabase.from('orders').select('*, order_items(*), order_events(*)').eq('id', id).single(),
+    supabase.from('store_settings').select('ozon_allow_open, ozon_allow_try').single(),
+  ])
   if (!data) notFound()
   const o = data as Order
   o.order_events.sort((a, b) => a.created_at.localeCompare(b.created_at))
@@ -151,6 +158,17 @@ export default async function OrderPage({ params }: PageProps<'/admin/commandes/
               <PaymentStatusSelect orderId={o.id} status={o.payment_status} />
               {o.payment_ref ? <span className="text-xs text-mute">Réf. {o.payment_ref}</span> : null}
             </div>
+          </Card>
+
+          <Card title="Livraison Ozon Express">
+            <DeliveryForm
+              orderId={o.id}
+              allowOpen={o.allow_open}
+              allowTry={o.allow_try}
+              isExchange={o.is_exchange}
+              note={o.delivery_note}
+              defaults={{ open: ozon?.ozon_allow_open ?? true, try: ozon?.ozon_allow_try ?? true }}
+            />
           </Card>
 
           <Card title="Note interne">
