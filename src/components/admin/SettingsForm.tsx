@@ -51,14 +51,14 @@ export function SettingsForm({ settings, integrations }: { settings: Settings; i
         </div>
       </Card>
 
-      <Card title="Livraison Ozon Express">
+      <Card title="Livraison Sendit">
         <div className="grid gap-3 xl:grid-cols-3">
           <Text
             name="ozon_pickup_city"
             label="Ville de ramassage"
             value={s.ozon_pickup_city ?? 'Casablanca'}
             placeholder="ex. Casablanca"
-            hint="Où Ozon vient chercher les colis."
+            hint="Où Sendit vient chercher les colis."
           />
           <Toggle
             name="ozon_allow_open"
@@ -74,7 +74,7 @@ export function SettingsForm({ settings, integrations }: { settings: Settings; i
           />
         </div>
         <p className="mt-3 text-sm text-mute">
-          Ces réglages remplissent le fichier « Fichier Ozon Express » de la page Commandes. Les clientes ne les voient pas.
+          Ces réglages remplissent le fichier « Fichier Sendit » de la page Commandes. Les clientes ne les voient pas.
         </p>
       </Card>
 

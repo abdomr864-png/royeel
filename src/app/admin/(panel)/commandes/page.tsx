@@ -71,12 +71,12 @@ export default async function OrdersPage({ searchParams }: PageProps<'/admin/com
         actions={
           <span className="flex flex-wrap gap-2">
             <a
-              href={`/admin/export/ozon`}
+              href={`/admin/export/sendit`}
               download
-              title="Les commandes confirmées, au format du fichier d’import Ozon Express"
+              title="Les commandes confirmées, au format du fichier d’import Sendit"
               className={btn.primary}
             >
-              Fichier Ozon Express ({byStatus.get('confirmed') ?? 0})
+              Fichier Sendit ({byStatus.get('confirmed') ?? 0})
             </a>
             <a href={`/admin/export/commandes${qs({})}`} className={btn.secondary}>
               Exporter (Excel)

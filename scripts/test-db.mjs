@@ -325,7 +325,7 @@ await test('the dashboard adds up live orders only', async () => {
   assert.ok(d.daily.length === 1)
 })
 
-await test('the admin sets Ozon Express delivery options; the public never sees them', async () => {
+await test('the admin sets Sendit delivery options; the public never sees them', async () => {
   const s = await as('authenticated', adminId, `update public.store_settings set ozon_pickup_city = 'Casablanca', ozon_allow_try = false returning ozon_allow_open, ozon_allow_try`)
   assert.deepEqual(s.rows[0], { ozon_allow_open: true, ozon_allow_try: false })
   await as('authenticated', adminId, `update public.store_settings set ozon_allow_try = true`)

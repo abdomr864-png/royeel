@@ -154,7 +154,7 @@ export function WhatsAppButtons({ orderId, templates, phoneHref }: { orderId: st
 type Tri = 'default' | 'yes' | 'no'
 const tri = (v: boolean | null): Tri => (v === null ? 'default' : v ? 'yes' : 'no')
 
-// What Ozon Express's courier needs to know about this parcel. Only the admin
+// What Sendit's courier needs to know about this parcel. Only the admin
 // sets these; the shop never asks customers.
 export function DeliveryForm({
   orderId,

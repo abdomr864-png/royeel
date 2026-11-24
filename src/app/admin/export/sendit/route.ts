@@ -19,7 +19,7 @@ type Row = {
   order_items: { product_name: string; size_label: string; color_name: string; quantity: number }[]
 }
 
-// The columns of Ozon Express's import file, in its order.
+// The columns of Sendit's import file, in its order.
 const HEADER = [
   'Nom',
   'Telephone',
@@ -36,8 +36,8 @@ const HEADER = [
   'Référence vendeur (optionnel)',
 ]
 
-// Orders ready to ship (confirmed by default) as Ozon Express's Excel file,
-// to upload on the Ozon Express space.
+// Orders ready to ship (confirmed by default) as Sendit's Excel file,
+// to upload on the Sendit space.
 export async function GET(request: Request) {
   const admin = await getAdmin()
   if (!admin?.isAdmin) return new Response('Non autorisé', { status: 401 })
@@ -53,6 +53,7 @@ export async function GET(request: Request) {
       .eq('status', status)
       .order('created_at', { ascending: true })
       .limit(5000),
+    // The ozon_* columns hold the Sendit defaults (named after the first carrier).
     admin.supabase.from('store_settings').select('ozon_pickup_city, ozon_allow_open, ozon_allow_try').single(),
   ])
   if (error) return new Response('Erreur', { status: 500 })
@@ -83,5 +84,5 @@ export async function GET(request: Request) {
   })
 
   const stamp = new Date().toISOString().slice(0, 10)
-  return xlsxResponse(toXlsx('Commandes', HEADER, rows), `ozon-express-royeel-${stamp}.xlsx`)
+  return xlsxResponse(toXlsx('Commandes', HEADER, rows), `sendit-royeel-${stamp}.xlsx`)
 }

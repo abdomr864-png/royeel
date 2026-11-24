@@ -52,7 +52,7 @@ const input = z.object({
   fullName: z.string().trim().min(2, 'INVALID_NAME').max(120, 'INVALID_NAME'),
   phone: z.string().max(40, 'INVALID_PHONE'),
   email: z.union([z.literal(''), z.email('INVALID_EMAIL').max(200, 'INVALID_EMAIL')]).default(''),
-  // Only places Ozon Express delivers to, saved with Ozon's spelling.
+  // Only places Sendit delivers to, saved with Sendit's spelling.
   city: z.string().max(80, 'INVALID_CITY').transform((c, ctx) => matchCity(c) ?? (ctx.addIssue({ code: 'custom', message: 'INVALID_CITY' }), z.NEVER)),
   address: z.string().trim().min(5, 'INVALID_ADDRESS').max(300, 'INVALID_ADDRESS'),
   source: z.enum(ORDER_SOURCES, 'INVALID_SOURCE').nullable(),

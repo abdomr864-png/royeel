@@ -49,7 +49,7 @@ export default async function OrderPage({ params }: PageProps<'/admin/commandes/
   const { id } = await params
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
 
-  const [{ data }, { data: ozon }] = await Promise.all([
+  const [{ data }, { data: delivery }] = await Promise.all([
     supabase.from('orders').select('*, order_items(*), order_events(*)').eq('id', id).single(),
     supabase.from('store_settings').select('ozon_allow_open, ozon_allow_try').single(),
   ])
@@ -160,14 +160,14 @@ export default async function OrderPage({ params }: PageProps<'/admin/commandes/
             </div>
           </Card>
 
-          <Card title="Livraison Ozon Express">
+          <Card title="Livraison Sendit">
             <DeliveryForm
               orderId={o.id}
               allowOpen={o.allow_open}
               allowTry={o.allow_try}
               isExchange={o.is_exchange}
               note={o.delivery_note}
-              defaults={{ open: ozon?.ozon_allow_open ?? true, try: ozon?.ozon_allow_try ?? true }}
+              defaults={{ open: delivery?.ozon_allow_open ?? true, try: delivery?.ozon_allow_try ?? true }}
             />
           </Card>
 

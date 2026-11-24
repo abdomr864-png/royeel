@@ -3,7 +3,7 @@ import { deflateRawSync } from 'node:zlib'
 
 // A one-sheet Excel file (.xlsx), enough for delivery companies' import
 // templates. Text cells stay text (a phone keeps its leading 0), numbers stay
-// numbers. Headers are bold on a yellow background, like Ozon's template.
+// numbers. Headers are bold on a yellow background, like Sendit's template.
 export type Cell = string | number | null | undefined
 
 export function toXlsx(sheetName: string, header: string[], rows: Cell[][]) {

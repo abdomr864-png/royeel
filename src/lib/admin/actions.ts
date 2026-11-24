@@ -61,7 +61,7 @@ export async function saveOrderNote(orderId: string, note: string): Promise<Acti
   return { ok: true, message: 'Note enregistrée.' }
 }
 
-// Delivery options sent to Ozon Express. "default" follows the settings.
+// Delivery options sent to Sendit. "default" follows the settings.
 const deliverySchema = z.object({
   allow_open: z.enum(['default', 'yes', 'no']),
   allow_try: z.enum(['default', 'yes', 'no']),
@@ -486,7 +486,7 @@ const SETTINGS_ERRORS: Record<string, string> = {
   meta_pixel_id: 'ID du pixel Meta invalide (chiffres uniquement).',
   tiktok_pixel_id: 'ID du pixel TikTok invalide.',
   shipping_fee_mad: 'Frais de livraison invalides.',
-  ozon_pickup_city: 'Indiquez la ville de ramassage Ozon Express.',
+  ozon_pickup_city: 'Indiquez la ville de ramassage Sendit.',
 }
 
 const BOOLEAN_FIELDS = [

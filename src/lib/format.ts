@@ -47,9 +47,9 @@ export function whatsappLink(number: string, text?: string) {
   return `https://wa.me/${n}${text ? `?text=${encodeURIComponent(text)}` : ''}`
 }
 
-// The Ozon Express place a customer typed, spelled as Ozon spells it, or null
-// when Ozon does not deliver there. Ignores case, accents, dashes, Arabic
-// glosses and a "ville" suffix (Ozon writes "KENITRA VILLE", "Tinghir ville").
+// The Sendit place a customer typed, spelled as Sendit's import file wants it,
+// or null when Sendit does not deliver there. Ignores case, accents, dashes,
+// quotes, Arabic glosses and a "ville" prefix or suffix.
 export function matchCity(input: string): string | null {
   const key = cityKey(input)
   if (!key) return null
@@ -58,7 +58,7 @@ export function matchCity(input: string): string | null {
   return CITIES.find((c) => cityKey(c) === key) ?? CITIES.find((c) => bareKey(c) === bareKey(input)) ?? null
 }
 
-// Usual spellings of places Ozon writes differently.
+// Usual spellings of places Sendit writes differently.
 const CITY_ALIASES: Record<string, string> = {
   ifrane: 'Ifran',
   larache: 'Laarache',
